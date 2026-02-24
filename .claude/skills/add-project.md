@@ -58,4 +58,16 @@ Add a new project card to the homepage gallery at `index.html`.
          </div>
    ```
 
-4. **Commit.** Stage the image file and `index.html`, then commit with message: `feat: add PROJECT_TITLE to gallery`
+4. **Add Google Analytics.** If creating a new HTML page (not just adding a card to index.html), include this in the `<head>` after the stylesheet link:
+   ```html
+   <!-- Google tag (gtag.js) -->
+   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SHYSENGR1Z"></script>
+   <script>
+     window.dataLayer = window.dataLayer || [];
+     function gtag(){dataLayer.push(arguments);}
+     gtag('js', new Date());
+     gtag('config', 'G-SHYSENGR1Z');
+   </script>
+   ```
+
+5. **Commit.** Stage the image file and `index.html`, then commit with message: `feat: add PROJECT_TITLE to gallery`
