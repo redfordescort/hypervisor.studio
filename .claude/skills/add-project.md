@@ -8,6 +8,18 @@ user_invocable: true
 
 Add a new project card to the homepage gallery at `index.html`.
 
+## Site Nav
+
+All pages use this nav: **Home | Blog | About**. If creating a standalone HTML page for a project, use this header:
+
+```html
+<nav class="nav">
+  <a href="/">Home</a>
+  <a href="/blog/">Blog</a>
+  <a href="/about.html">About</a>
+</nav>
+```
+
 ## Process
 
 1. **Gather information.** Ask the user for:
