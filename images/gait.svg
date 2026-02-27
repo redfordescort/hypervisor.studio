@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <rect width="1600" height="1000" fill="#1a1a1a"/>
+
+  <!-- Badge outline -->
+  <rect x="580" y="200" width="440" height="600" rx="6" fill="#fafaf8" stroke="#2e2e2e" stroke-width="12"/>
+
+  <!-- Purple band -->
+  <rect x="586" y="206" width="428" height="130" fill="#7c3aed"/>
+  <text x="800" y="270" text-anchor="middle" font-family="'Courier New', monospace" font-size="62" font-weight="700" fill="#fff" letter-spacing="8">GAIT</text>
+  <text x="800" y="310" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="500" fill="rgba(255,255,255,0.85)" letter-spacing="3">GAME AI TRANSPARENCY</text>
+
+  <!-- Level number and label row -->
+  <text x="690" y="480" text-anchor="middle" font-family="sans-serif" font-size="130" font-weight="900" fill="#1e1e1e">0</text>
+  <text x="860" y="440" text-anchor="middle" font-family="sans-serif" font-size="36" font-weight="700" fill="#2f9e44" letter-spacing="2">AI-</text>
+  <text x="860" y="490" text-anchor="middle" font-family="sans-serif" font-size="36" font-weight="700" fill="#2f9e44" letter-spacing="2">FREE</text>
+
+  <!-- Level dots at bottom -->
+  <circle cx="660" cy="700" r="18" fill="#2f9e44"/>
+  <circle cx="715" cy="700" r="18" fill="#2B7EB5"/>
+  <circle cx="770" cy="700" r="18" fill="#4B94C8"/>
+  <circle cx="825" cy="700" r="18" fill="#D4920F"/>
+  <circle cx="880" cy="700" r="18" fill="#D04A25"/>
+  <circle cx="935" cy="700" r="18" fill="#9B3FD4"/>
+</svg>

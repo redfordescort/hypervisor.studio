@@ -1,0 +1,281 @@
+/* ============================================================
+   GAIT Shared Styles
+   Common CSS for all GAIT site pages (website, FAQ, badge gen)
+   ============================================================ */
+
+:root {
+  --bg: #f5f3ef;
+  --bg-elevated: #eceae4;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f8f7f5;
+  --text: #1a1a2e;
+  --text-dim: #555568;
+  --text-muted: #8a8a9e;
+  --border: #ddd9d0;
+  --border-light: #ccc8bf;
+
+  --l0: #2f9e44;
+  --l0-dim: #d1fae5;
+  --l1: #2B7EB5;
+  --l1-dim: #dbeafe;
+  --l15: #4B94C8;
+  --l15-dim: #e0f2fe;
+  --l2: #D4920F;
+  --l2-dim: #fef3c7;
+  --l3: #D04A25;
+  --l3-dim: #fee2e2;
+  --l4: #9B3FD4;
+  --l4-dim: #f3e8ff;
+
+  --accent: #7c3aed;
+  --accent-dim: #ede9fe;
+
+  --font-gait: 'Space Mono', monospace;
+  --font-num: 'Outfit', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+/* ============ UTILITY ============ */
+.container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+.mono { font-family: 'Space Mono', monospace; }
+.heading { font-family: 'Outfit', sans-serif; }
+
+/* ============ PREVIEW BANNER ============ */
+.preview-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 101;
+  background: var(--accent);
+  color: white;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.preview-banner strong { font-weight: 700; }
+
+/* ============ NAV ============ */
+nav {
+  position: fixed; top: 33px; left: 0; right: 0; z-index: 100;
+  background: rgba(245, 243, 239, 0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 0;
+}
+nav .container {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+.nav-links a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a.active { color: var(--accent); font-weight: 700; }
+.nav-cta {
+  background: var(--accent) !important;
+  color: #fff !important;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.03em;
+  transition: opacity 0.2s;
+}
+.nav-cta:hover { opacity: 0.88; }
+
+/* ============ CITATION SYSTEM ============ */
+.cite {
+  position: relative;
+  display: inline;
+}
+.cite a {
+  font-size: 0.7em;
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+  vertical-align: super;
+  cursor: help;
+  margin-left: 1px;
+}
+.cite a:hover { text-decoration: underline; }
+.cite .cite-tip {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  max-width: 300px;
+  z-index: 200;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  pointer-events: none;
+  line-height: 1.4;
+  white-space: normal;
+}
+.cite:hover .cite-tip { display: block; }
+
+/* ============ BADGE — SHARED ============ */
+.badge {
+  display: inline-flex; flex-direction: column;
+  border: 5px solid #1e1e1e; border-radius: 3px;
+  background: #fafaf8; overflow: hidden; font-family: var(--font-body);
+}
+
+/* ============ BADGE — FULL ============ */
+.badge--large { width: 192px; }
+
+.badge--large .badge__band {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; color: white; padding: 8px 10px 6px;
+}
+.badge--large .badge__gait {
+  font-family: var(--font-gait); font-weight: 700;
+  letter-spacing: 0.14em; line-height: 1; font-size: 26px;
+}
+.badge--large .badge__subtitle {
+  font-family: var(--font-body); font-weight: 500;
+  letter-spacing: 0.06em; opacity: 0.85; line-height: 1;
+  margin-top: 2px; font-size: 7px;
+}
+.badge--large .badge__body {
+  display: flex; align-items: center; padding: 6px 10px; gap: 0;
+}
+.badge--large .badge__num {
+  font-family: var(--font-num); font-weight: 900; color: #1e1e1e;
+  line-height: 1; flex-shrink: 0; width: 33.3%; text-align: center; font-size: 44px;
+}
+.badge--large .badge__body--wide-num .badge__num { width: 50%; font-size: 40px; }
+.badge--large .badge__label-wrap {
+  display: flex; flex-direction: column; width: 66.6%; padding-left: 2px;
+}
+.badge--large .badge__body--wide-num .badge__label-wrap { width: 50%; }
+.badge--large .badge__label {
+  font-weight: 700; letter-spacing: 0.04em; line-height: 1.2;
+  word-wrap: break-word; hyphens: auto; font-size: 13px;
+}
+.badge--large .badge__tags {
+  display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; padding: 0 8px 8px;
+}
+.badge--large .badge__tag {
+  background: #e9ecef; color: #1e1e1e; font-weight: 600;
+  border-radius: 2px; white-space: nowrap; line-height: 1;
+  font-size: 8.5px; padding: 3px 6px;
+}
+.badge--large .badge__sep { height: 0; border: none; border-top: 2px solid #1e1e1e; margin: 0 8px; }
+.badge--large .badge__subs { display: flex; flex-direction: column; gap: 4px; padding: 6px 8px 8px; }
+.badge--large .badge__sub {
+  display: flex; align-items: flex-start; gap: 5px;
+  border: 1px solid #ccc; border-radius: 3px; padding: 3px 5px;
+}
+.badge--large .badge__sub-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: white; font-weight: 700; border-radius: 2px;
+  flex-shrink: 0; line-height: 1; white-space: nowrap;
+  font-size: 9px; padding: 3px 6px; min-width: 76px;
+}
+.badge--large .badge__sub-pill-num { font-weight: 700; }
+.badge--large .badge__sub-pill-label { font-weight: 600; opacity: 0.9; font-size: 8px; }
+.badge--large .badge__sub-tags {
+  display: flex; flex-wrap: wrap; gap: 2px; min-width: 0; flex: 1; align-items: center;
+}
+.badge--large .badge__sub-tag {
+  color: #555; font-weight: 500; line-height: 1.1; background: #e9ecef;
+  border-radius: 1.5px; white-space: nowrap; font-size: 8px; padding: 1px 4px;
+}
+
+/* ============ BADGE LAYOUT HELPERS ============ */
+.badge-grid { display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem; align-items: flex-start; }
+.badge-card { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+.badge-card .label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* ============ FOOTER ============ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 3rem 0;
+}
+.footer-inner {
+  max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+}
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text-dim); }
+.footer-copy {
+  width: 100%;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.footer-disclaimer {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  margin-top: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .nav-links { gap: 1rem; }
+  .nav-links a:not(.nav-cta) { display: none; }
+}
+
+/* ============ ANIMATIONS ============ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}

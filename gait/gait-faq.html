@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAQ — GAIT: Game AI Transparency Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gait-shared.css">
+<style>
+/* FAQ uses a narrower content container (not nav) */
+main .container { max-width: 860px; }
+footer .footer-inner { max-width: 860px; }
+
+/* ============ HEADER ============ */
+.page-header {
+  padding: 11rem 0 4rem;
+  position: relative;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -150px; right: -250px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.breadcrumb {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.breadcrumb a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.breadcrumb a:hover { opacity: 0.75; }
+.breadcrumb span { margin: 0 0.5rem; }
+.page-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+.page-header p {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+/* ============ TOC ============ */
+.toc {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  padding: 1.75rem 2rem;
+  margin-bottom: 4rem;
+}
+.toc-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.toc-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.4rem 2rem;
+}
+.toc-list a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  transition: color 0.2s;
+}
+.toc-list a:hover { color: var(--accent); }
+.toc-list a::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border-light);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toc-list a:hover::before { background: var(--accent); }
+
+/* ============ FAQ SECTIONS ============ */
+.faq-section {
+  margin-bottom: 4rem;
+  scroll-margin-top: 5rem;
+}
+.faq-section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+}
+.faq-section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ============ ACCORDION ============ */
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item:last-child { border-bottom: none; }
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: left;
+  padding: 1.25rem 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  line-height: 1.45;
+  transition: color 0.2s;
+}
+.faq-question:hover { color: var(--accent); }
+
+.faq-chevron {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 0.15em;
+  transition: transform 0.3s ease;
+}
+.faq-chevron svg {
+  width: 14px; height: 14px;
+  stroke: var(--text-muted);
+  stroke-width: 2;
+  fill: none;
+  transition: stroke 0.2s;
+}
+.faq-question:hover .faq-chevron svg { stroke: var(--accent); }
+.faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, padding 0.3s ease;
+}
+.faq-item.open .faq-answer {
+  max-height: 800px;
+}
+.faq-answer-inner {
+  padding-bottom: 1.5rem;
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  line-height: 1.75;
+}
+.faq-answer-inner p { margin-bottom: 0.85rem; }
+.faq-answer-inner p:last-child { margin-bottom: 0; }
+.faq-answer-inner strong { color: var(--text); font-weight: 600; }
+.faq-answer-inner code {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  color: var(--accent);
+}
+.faq-answer-inner a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(124, 58, 237, 0.35);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+.faq-answer-inner a:hover { text-decoration-color: var(--accent); }
+
+.faq-answer-inner .example-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 0.85rem 0;
+  font-size: 0.88rem;
+}
+.faq-answer-inner .example-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.level-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.lr-0 { color: var(--l0); background: rgba(22,163,74,0.08); }
+.lr-1 { color: var(--l1); background: rgba(37,99,235,0.08); }
+.lr-15 { color: var(--l15); background: rgba(99,102,241,0.08); }
+.lr-2 { color: var(--l2); background: rgba(217,119,6,0.08); }
+.lr-3 { color: var(--l3); background: rgba(234,88,12,0.08); }
+.lr-4 { color: var(--l4); background: rgba(220,38,38,0.08); }
+
+/* Citation tooltip position (below, FAQ-specific) */
+.cite .cite-tip { top: calc(100% + 4px); }
+
+/* FAQ footer extra spacing */
+footer { margin-top: 2rem; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .page-header { padding: 9.5rem 0 3rem; }
+  .toc-list { grid-template-columns: 1fr; }
+}
+
+/* ============ ANIMATIONS ============ */
+.page-header .breadcrumb,
+.page-header h1,
+.page-header > p {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+.page-header h1 { animation-delay: 0.08s; }
+.page-header > p { animation-delay: 0.16s; }
+</style>
+</head>
+<body>
+
+<div class="preview-banner">
+  <strong>GAIT v1 now available for preview.</strong> Help define the future of AI in games by adopting GAIT and giving feedback.
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="gait-website.html" class="nav-logo">GAIT</a>
+    <div class="nav-links">
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-website.html#how-it-works">How It Works</a>
+      <a href="gait-framework.html">Framework</a>
+      <a href="gait-faq.html" class="active">FAQ</a>
+      <a href="gait-badge-generator.html">Badge Generator</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="nav-cta">Register Your Game</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<!-- HEADER -->
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="gait-website.html">GAIT</a> <span>/</span> FAQ</div>
+    <h1>Frequently asked questions</h1>
+    <p>Everything studios, developers, and players ask about the framework — from basic mechanics to edge cases to the hard questions.</p>
+  </div>
+</section>
+
+<!-- TOC -->
+<div class="container">
+  <div class="toc">
+    <div class="toc-title">Sections</div>
+    <ul class="toc-list">
+      <li><a href="#basics">The Basics</a></li>
+      <li><a href="#levels-faq">Understanding the Levels</a></li>
+      <li><a href="#code">Code & Level 1.5</a></li>
+      <li><a href="#boundary">The Level 2 / 3 Boundary</a></li>
+      <li><a href="#tags">Content Tags</a></li>
+      <li><a href="#redlines">Red Lines</a></li>
+      <li><a href="#registration">Registration & Badges</a></li>
+      <li><a href="#scope">Scope & Definitions</a></li>
+      <li><a href="#regulatory">Regulation & Compliance</a></li>
+      <li><a href="#hard-questions">The Hard Questions</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+
+<div style="display: flex; justify-content: flex-end; margin-bottom: 1.5rem;">
+  <button id="expand-all-btn" style="background: none; border: 1px solid var(--border); color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; padding: 0.5rem 1.25rem; border-radius: 6px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">Expand all</button>
+</div>
+
+<!-- ====== THE BASICS ====== -->
+<div class="faq-section" id="basics">
+  <div class="faq-section-label">01</div>
+  <h2 class="faq-section-title">The Basics</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What is GAIT?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>GAIT (Game AI Transparency) is a free, voluntary disclosure framework that gives game studios a standardized way to communicate how generative AI is used in their products. It defines six levels — from <span class="level-ref lr-0">0</span> (AI-Free) to <span class="level-ref lr-4">4</span> (Live Generative AI) — based on a single question: <strong>what AI-generated content, if any, reaches the player?</strong></p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Who created GAIT? Is it an official industry standard?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>GAIT was created by <strong>James Jennings</strong> — a game developer and AI expert who saw three colliding problems: players organizing witchhunts against studios suspected of using AI, developers paralyzed by fear of job displacement, and studios quietly adopting AI with no accountability or transparency. The framework grew out of extensive research into the regulatory landscape, player sentiment data, developer surveys, platform policies, and historical parallels from other industries.</p>
+      <p>GAIT is not maintained by the ESA, ESRB, IGDA, or any platform holder. No trade association or publisher funded or directed it. It's one individual's proposal for how the industry could handle this — offered freely in the hope that it's useful.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Is GAIT mandatory?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> Adoption is entirely voluntary. No platform, store, or government requires it. Studios opt in by filling out the self-assessment questionnaire, maintaining the required documentation, and displaying the GAIT badge. There is no fee.</p>
+      <p>That said, the framework is designed to be <strong>regulatory-forward</strong> — every level maps to specific obligations under the EU AI Act, South Korea's AI Framework Act, China's AI labeling regime, Steam's disclosure policy, and other frameworks.<span class="cite"><a href="#" target="_blank" rel="noopener">1</a><span class="cite-tip">See GAIT Definition Document §12: Regulatory Compliance Crosswalk</span></span> Studios that adopt GAIT now will have a head start when mandatory requirements arrive.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does GAIT take a position on whether AI in games is good or bad?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> The framework is neutral on AI adoption. It describes <em>how</em> AI is used, not <em>whether</em> it should be. A studio that is proudly AI-free and a studio whose entire game is built on live AI systems can both participate. Games like <em>AI Roguelite</em> (82% positive Steam reviews)<span class="cite"><a href="https://www.screenhub.com.au/news/games/steam-generative-ai-games-2673234/" target="_blank" rel="noopener">14</a><span class="cite-tip">ScreenHub — Steam generative AI games analysis</span></span> or <em>Death by AI</em> (20 million players in two months)<span class="cite"><a href="https://inworld.ai/blog/gdc-2025" target="_blank" rel="noopener">15</a><span class="cite-tip">Inworld AI — GDC 2025 report</span></span> — where generative AI is the explicit creative premise — would carry <span class="level-ref lr-4">Level 4</span> with full tags, which in their case is a selling point, not a warning.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does it cost anything?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Participation is <strong>free</strong>. No membership fee, no licensing cost, no per-title charge. The GAIT designation and badge assets are available to any studio that completes the self-assessment and maintains documentation. GAIT charges nothing.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== UNDERSTANDING THE LEVELS ====== -->
+<div class="faq-section" id="levels-faq">
+  <div class="faq-section-label">02</div>
+  <h2 class="faq-section-title">Understanding the Levels</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Can you give me the quick version of all six levels?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><span class="level-ref lr-0">0</span> <strong>AI-Free</strong> — No generative AI used anywhere in production.</p>
+      <p><span class="level-ref lr-1">1</span> <strong>AI-Assisted Development</strong> — AI used behind the scenes; nothing AI-generated reaches the player.</p>
+      <p><span class="level-ref lr-15">1.5</span> <strong>AI-Generated Code</strong> — AI code generation tools (IDE-integrated and agentic/CLI-based) ship code in the product; all creative content is human-made.</p>
+      <p><span class="level-ref lr-2">2</span> <strong>AI-Augmented Creative Pipelines</strong> — AI tools integrated into human-led creative workflows. Humans author; AI assists. Content tags specify which categories.</p>
+      <p><span class="level-ref lr-3">3</span> <strong>AI-Generated Shipped Content</strong> — AI is the primary creator for one or more content categories. Humans curate. Content tags specify which categories.</p>
+      <p><span class="level-ref lr-4">4</span> <strong>Live Generative AI</strong> — AI generates content in real time during gameplay.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Why is there a Level 1.5? Why not just 0 through 5?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Code occupies a genuinely unique position. It ships to the player — it runs on their machine — but it's not creative content players experience aesthetically. Nobody can tell whether a save system or a network handler was written by a human or generated by Copilot.</p>
+      <p>Putting AI-generated code at Level 2 (alongside AI in creative pipelines) would overstate its impact on the player experience. Leaving it at Level 1 (no AI output ships) would be inaccurate — it does ship. The half-step acknowledges code's distinct character without creating a precedent for 2.5 or 3.5 gradations. It's the framework's only half-step.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What if my game is Level 2 for art but Level 3 for localization?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>GAIT uses the <strong>highest applicable level</strong> as the headline, with tags and sub-levels providing detail. Your game would be:</p>
+      <div class="example-box">
+        <div class="example-label">Designation</div>
+        <code>GAIT 3: LOC</code> · <code>2: ART</code>
+      </div>
+      <p>This tells players that localization is AI-generated (Level 3) while art is human-led with AI tools (Level 2). The composite format lets studios be precise without requiring players to parse a matrix.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does Level 0 mean nobody on the team has ever used ChatGPT?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> Level 0 applies to the specific game product carrying the designation. It means no generative AI was used in any capacity connected to that game's production. It doesn't require that employees have never used AI in their personal lives, on other projects, or for general learning. The attestation is about the product, not the person.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== CODE & LEVEL 1.5 ====== -->
+<div class="faq-section" id="code">
+  <div class="faq-section-label">03</div>
+  <h2 class="faq-section-title">Code & Level 1.5</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      I asked ChatGPT how to fix a bug, then wrote the code myself. Is that Level 1 or 1.5?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Level 1.</strong> The boundary is binary and based on tool integration, not the degree of human editing. If you're using AI in a <em>conversational, external</em> capacity — asking ChatGPT a question in a browser, pasting code into a chat window for debugging advice — that's reference material. You wrote the shipped code. The AI tool isn't integrated into your project environment.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      We have GitHub Copilot installed but our devs mostly ignore its suggestions. Still 1.5?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Yes.</strong> The trigger is the tool's presence in the development toolchain, not the proportion of AI-generated output that ships. If an integrated generative code tool (Copilot, Cursor, CodeWhisperer, Tabnine, Claude Code, Windsurf, Aider, etc.) is part of your engineering team's development environment, you're Level 1.5 — regardless of acceptance rates. This keeps the boundary binary and instantly auditable: is the tool installed in the project environment or not?</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Why doesn't AI-generated code show up as a Level 3 content tag?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Level 3 content tags (<code>ART</code>, <code>VOICE</code>, <code>TEXT</code>, etc.) describe content players <em>experience aesthetically</em>. Code is functional infrastructure — players interact with its effects but don't perceive the code itself. A studio that uses AI extensively for code but has human-led creative pipelines is Level 1.5, not Level 3. The two concerns are separate: creative provenance and engineering tooling.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== THE LEVEL 2/3 BOUNDARY ====== -->
+<div class="faq-section" id="boundary">
+  <div class="faq-section-label">04</div>
+  <h2 class="faq-section-title">The Level 2 / Level 3 Boundary</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How do I know if I'm Level 2 or Level 3? This seems like the hardest call.
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>It is the hardest call, and it's intentionally a <strong>pipeline-level</strong> test, not an asset-by-asset percentage test. The question isn't "how much did a human change this texture?" It's: <strong>who drives the creative pipeline?</strong></p>
+      <p><strong>Level 2:</strong> Human creative professionals lead the pipeline. AI tools are integrated into it as instruments. The pipeline could exist without the AI tools — they accelerate, they don't constitute.</p>
+      <p><strong>Level 3:</strong> AI <em>is</em> the pipeline for that content category. Humans prompt, select, curate, and quality-check — but the AI generates the foundational work. Removing the AI would require fundamentally restructuring how that content is produced.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      I'm a solo developer. I don't have "pipelines" or "departments." How does this apply to me?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>For solo developers and micro-studios (1–3 people), the distinction shifts to a <strong>primary authorship test</strong> — the individual-scale analog of the pipeline test.</p>
+      <p><strong>Level 2</strong> requires you to be the primary author of the base asset: you sketched the layout, wrote the draft, composed the melody, modeled the geometry — then used AI for refinement, upscaling, or variation.</p>
+      <p><strong>Level 3</strong> applies when AI generates the foundational asset from a prompt and your role is selection, curation, and polish.</p>
+      <div class="example-box">
+        <div class="example-label">Examples</div>
+        <p style="margin-bottom: 0.5rem;">You sketch a character and use AI to generate color variations → <strong>Level 2</strong></p>
+        <p style="margin-bottom: 0;">You prompt a diffusion model for character designs and pick the best one → <strong>Level 3: ART</strong></p>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Our artist uses Midjourney for reference images then paints everything by hand. What level?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Level 1 at most</strong> (likely Level 1 if the Midjourney output doesn't ship). The artist authored the final asset. Using AI for visual reference is no different from using a mood board. If the AI-generated reference images are discarded and the final shipped art is painted by hand, no AI-generated content reaches the player.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== CONTENT TAGS ====== -->
+<div class="faq-section" id="tags">
+  <div class="faq-section-label">05</div>
+  <h2 class="faq-section-title">Content Tags</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What are the content tags and when do I use them?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Content tags are required at <span class="level-ref lr-2">Level 2</span>, <span class="level-ref lr-3">Level 3</span>, and <span class="level-ref lr-4">Level 4</span>. They specify <em>which</em> content categories involve AI — whether AI-augmented, AI-generated, or live-generated. This gives players granular information rather than a blanket label.</p>
+      <p><strong>Level 2/3 tags:</strong> <code>ART</code>, <code>AUDIO</code>, <code>VOICE</code>, <code>TEXT</code>, <code>LOC</code>, <code>VIDEO</code>, <code>3D</code></p>
+      <p><strong>Level 4 tags:</strong> <code>LIVE-DIALOGUE</code>, <code>LIVE-NARRATIVE</code>, <code>LIVE-ART</code>, <code>LIVE-AUDIO</code>, <code>LIVE-VOICE</code>, <code>LIVE-WORLD</code></p>
+      <p>A game can carry multiple tags. <code>GAIT 3: ART, LOC</code> tells players that art and translations are AI-generated while other categories (writing, voice, music) are human-led.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does AI-assisted localization with human review count as LOC tag?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>It depends on the pipeline. If human translators who speak the target language review, correct, and finalize every line, that's a human-led pipeline with an AI tool — <strong>Level 2: LOC</strong>. If the AI generates translations and a non-speaker does a surface pass for formatting, that's closer to <strong>Level 3: LOC</strong> because the human can't meaningfully evaluate the AI's creative output. The key question: can the human reviewer actually judge the quality of the AI's work in this domain?</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== RED LINES ====== -->
+<div class="faq-section" id="redlines">
+  <div class="faq-section-label">06</div>
+  <h2 class="faq-section-title">Red Lines</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What happens if we accidentally ship a placeholder AI texture? Is that a red line violation?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> Red Line 2 (No Concealment) distinguishes between QA failures and deliberate cover-ups. Accidental inclusion of placeholder AI content — a documented pattern across multiple shipped titles<span class="cite"><a href="https://www.gamedeveloper.com/business/ubisoft-says-ai-generated-placeholder-artwork-slipped-into-anno-117-pax-romana" target="_blank" rel="noopener">20</a><span class="cite-tip">Game Developer — Ubisoft, 11 Bit Studios, Frontier, and Sandfall all claimed AI assets were "placeholders" that shipped accidentally</span></span> — triggers a mandatory correction process: update the GAIT level if needed, patch or replace the content, and issue a public acknowledgment. But it's not a red line violation in itself.</p>
+      <p>Deliberately concealing AI use that would place you at a higher level <em>is</em> a violation and forfeits the designation.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Red Line 1 says no unconsented creative replication. Does that cover training a model on a general art style?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Red Line 1 applies to replicating an <strong>identifiable individual's</strong> creative output — a specific voice actor's voice, a specific performer's likeness, a <em>named</em> artist's identifiable style. It does not attempt to regulate the use of general-purpose AI models trained on broad datasets; that's a copyright question being litigated in 70+ pending lawsuits<span class="cite"><a href="https://www.lewissilkin.com/insights/2025/02/11/from-pixels-to-policies-potential-impacts-of-the-uk-government-copyright-and-ai-102jzud" target="_blank" rel="noopener">21</a><span class="cite-tip">Lewis Silkin — "From Pixels to Policies: Potential Impacts of the UK Government Copyright and AI," Feb 2025</span></span> and is governed by model providers and regulators, not a studio disclosure framework.</p>
+      <p>The line is: if you're specifically targeting a recognizable person's work, you need their consent. If you're using a general-purpose tool, your obligation is accurate level disclosure.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== REGISTRATION & BADGES ====== -->
+<div class="faq-section" id="registration">
+  <div class="faq-section-label">07</div>
+  <h2 class="faq-section-title">Registration & Badges</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How do I register my game?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Four steps: (1) Review the level definitions and determine your GAIT level. (2) Fill out the self-assessment questionnaire on this site — you'll declare your level, applicable content tags, and confirm red line compliance. (3) Maintain the documentation required for your level on file. (4) Display the GAIT badge on your storefront page, packaging, and/or in-game settings. Badge assets and usage guidelines are provided upon registration.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Where should I display the GAIT badge?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Recommended placements, in order of priority:</p>
+      <p><strong>Digital storefronts</strong> — Steam page, Epic store listing, PlayStation Store, Xbox Store, Nintendo eShop, App Store, Google Play. This is where players make purchase decisions.</p>
+      <p><strong>Physical packaging</strong> — for boxed releases, on the back cover alongside other ratings.</p>
+      <p><strong>In-game</strong> — accessible via a settings or info menu. Non-intrusive placement, consistent with the EU AI Act's artistic exemption for creative works (disclosure that doesn't "hamper the display or enjoyment of the work").<span class="cite"><a href="https://www.ailawandpolicy.com/2025/02/some-implications-of-the-eu-ai-act-on-video-game-developers/" target="_blank" rel="noopener">16</a><span class="cite-tip">AI Law and Policy — "Some Implications of the EU AI Act on Video Game Developers," Feb 2025</span></span></p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      How is a studio's GAIT level verified?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Right now, GAIT is <strong>self-attestation only.</strong> You fill out the self-assessment questionnaire, declare your level, and maintain documentation to back it up. This is similar to how Steam's current AI disclosure system works — an honor system.</p>
+      <p>Self-attestation is an honest starting point. It means the framework can launch without gatekeepers, fees, or infrastructure that doesn't exist yet. It also means studios are making a public claim they can be held to.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Could verification become more rigorous in the future?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>If GAIT proves popular and studios want stronger credibility signals, verification services could be developed — peer review by other participating studios, or independent third-party audits analogous to USDA Organic certification. A "GAIT Verified" designation backed by an independent audit would carry more weight than self-declaration alone.</p>
+      <p>But that's a bridge to cross if and when there's demand. Right now, the priority is getting the vocabulary and the levels right. This is one person's proposal — building an audit infrastructure before anyone has adopted the framework would be putting the cart before the horse.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What if our AI use changes after launch — DLC, live service updates, seasonal content?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>The GAIT level applies to the product as shipped. If post-launch content changes the AI use profile — say, a live service game adds an LLM-powered NPC system in a seasonal update — the designation must be updated from the date of that content update. The new level applies going forward.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== SCOPE & DEFINITIONS ====== -->
+<div class="faq-section" id="scope">
+  <div class="faq-section-label">08</div>
+  <h2 class="faq-section-title">Scope & Definitions</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does GAIT cover AI used in trailers, ads, and marketing?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> GAIT applies to the shipped game product only. Marketing and promotional materials are out of scope. AI use in advertising is a distinct domain with its own emerging frameworks (e.g., the IAB AI Transparency and Disclosure Framework). Using AI to generate a trailer doesn't affect your game's GAIT level.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Does NVIDIA DLSS or AMD FSR count as generative AI under GAIT?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> Upscaling and rendering technologies (DLSS, FSR, Intel XeSS, frame generation) are explicitly excluded from GAIT's definition of "AI." They are broadly accepted by players, are not part of the generative AI debate, and raise no training-data consent issues. A game whose only AI technology is DLSS support does not need GAIT disclosure.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What about procedural generation — Minecraft, No Man's Sky, roguelikes?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Explicitly out of scope.</strong> Procedural generation — deterministic algorithmic content creation with set rules — is fundamentally different from generative AI. Procedural systems use hand-designed rules and produce predictable outputs within defined parameters. They raise no training-data consent issues and are well-understood by players. A procedurally generated dungeon in a roguelike and a diffusion-model-generated texture are not the same thing, and the framework doesn't conflate them.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What about traditional game AI — pathfinding, behavior trees, NPC state machines?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Out of scope.</strong> GAIT's definition of "AI" means <em>generative</em> AI specifically — systems trained on data that produce non-deterministic creative outputs. Traditional game AI (pathfinding, behavior trees, FSMs, utility AI, GOAP) is deterministic or heuristic, doesn't generate creative content, and has been standard practice in games for decades. These systems require no GAIT disclosure.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Our game uses matchmaking algorithms and a dynamic pricing engine. Are those in scope?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> ML-driven optimization systems — matchmaking, dynamic pricing, store recommendations, anti-cheat — are classification/prediction models that don't generate creative content. They're excluded from GAIT's scope. (Note: these systems may trigger separate regulatory obligations under the EU AI Act or other frameworks depending on their impact, but that's outside GAIT's domain.)</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What about accessibility features powered by AI?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>GAIT includes an <strong>accessibility exemption.</strong> AI systems used exclusively for accessibility purposes — text-to-speech, audio description, adaptive difficulty for accessibility needs, visual filters for colorblindness, sign language interpretation — do not trigger Level 3 or 4 designations. This exists because disclosure frameworks must not disincentivize inclusive design for the roughly 429 million players with disabilities worldwide.<span class="cite"><a href="https://www.who.int/health-topics/disability" target="_blank" rel="noopener">13</a><span class="cite-tip">Estimated from WHO global disability prevalence (~16%) applied to ~2.7 billion global gamer population</span></span></p>
+      <p>The exemption is <strong>narrow by design</strong>: it applies only to systems whose sole purpose is accessibility. A system that serves both accessibility and general audiences is evaluated for its general use. You can't route all your AI through an accessibility wrapper to avoid disclosure.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Our game uses a third-party engine plugin that generates textures with AI. Is that on us?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>Yes.</strong> If an engine or middleware component uses generative AI in a way that affects player-facing content, the resulting content is evaluated under the same criteria as studio-produced content. You can't evade disclosure by attributing AI generation to a third-party tool. What matters is what reaches the player, not who built the tool that made it.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== REGULATORY ====== -->
+<div class="faq-section" id="regulatory">
+  <div class="faq-section-label">09</div>
+  <h2 class="faq-section-title">Regulation & Compliance</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Which regulations does GAIT map to?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>The full definition document includes a regulatory crosswalk covering: the <strong>EU AI Act</strong> (Article 50, effective August 2026)<span class="cite"><a href="https://artificialintelligenceact.eu/article/50/" target="_blank" rel="noopener">2</a><span class="cite-tip">EU AI Act, Article 50 — Transparency obligations for providers and deployers of certain AI systems</span></span>, <strong>South Korea's AI Framework Act</strong> (effective January 2026)<span class="cite"><a href="https://www.loc.gov/item/global-legal-monitor/2026-02-20/south-korea-comprehensive-ai-legal-framework-takes-effect" target="_blank" rel="noopener">3</a><span class="cite-tip">Library of Congress — "South Korea: Comprehensive AI Legal Framework Takes Effect," Feb 2026</span></span>, <strong>China's AI labeling regime</strong> (effective September 2025)<span class="cite"><a href="https://www.insideprivacy.com/international/china/china-releases-new-labeling-requirements-for-ai-generated-content/" target="_blank" rel="noopener">4</a><span class="cite-tip">Inside Privacy — "China Releases New Labeling Requirements for AI-Generated Content"</span></span>, <strong>Steam's content survey</strong>, <strong>US FTC</strong> existing authority, <strong>California SB 942</strong> (effective August 2026)<span class="cite"><a href="https://www.orrick.com/en/Insights/2025/01/Navigating-the-California-AI-Transparency-Act-New-Contract-Requirements" target="_blank" rel="noopener">17</a><span class="cite-tip">Orrick — "Navigating the California AI Transparency Act: New Contract Requirements," Jan 2025</span></span>, <strong>Microsoft XR-018 / Store Policy 11.16</strong><span class="cite"><a href="https://www.neowin.net/news/microsoft-store-policies-updated-with-new-rules-on-generative-ai-child-safety-and-more/" target="_blank" rel="noopener">18</a><span class="cite-tip">Neowin — "Microsoft Store policies updated with new rules on generative AI, child safety, and more"</span></span>, and the <strong>Tennessee ELVIS Act</strong> (effective July 2024)<span class="cite"><a href="https://www.dglaw.com/ai-legal-updates-synthetic-performer-transparency-state-federal-conflict/" target="_blank" rel="noopener">5</a><span class="cite-tip">Davis+Gilbert LLP — AI legal updates on synthetic performer transparency and state-federal conflict</span></span>. Each level maps to specific obligations under each framework.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Aren't games exempt from most AI regulation?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>It varies by jurisdiction. The EU AI Act classifies games as "minimal risk"<span class="cite"><a href="https://www.ailawandpolicy.com/2025/02/some-implications-of-the-eu-ai-act-on-video-game-developers/" target="_blank" rel="noopener">16</a><span class="cite-tip">AI Law and Policy — "Some Implications of the EU AI Act on Video Game Developers," Feb 2025</span></span> and grants a creative-works carve-out that limits (but doesn't eliminate) transparency obligations. California SB 942 explicitly exempts non-user-generated video games.<span class="cite"><a href="https://www.orrick.com/en/Insights/2025/01/Navigating-the-California-AI-Transparency-Act-New-Contract-Requirements" target="_blank" rel="noopener">17</a><span class="cite-tip">Orrick — "Navigating the California AI Transparency Act: New Contract Requirements," Jan 2025</span></span> <strong>But South Korea's AI Framework Act explicitly includes games</strong><span class="cite"><a href="https://www.koreaherald.com/article/10486247" target="_blank" rel="noopener">3</a><span class="cite-tip">Korea Herald — South Korea AI Framework Act coverage of video games confirmed by National Assembly Research Service</span></span> — the National Assembly Research Service confirmed video games fall under its scope. China's regime applies to all AI-generated content on Chinese internet platforms.</p>
+      <p>The picture is a patchwork: some jurisdictions exempt most game AI, others don't. GAIT's crosswalk helps studios navigate this jurisdiction by jurisdiction rather than assuming a blanket exemption that doesn't exist.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Do we need to document training data for third-party AI tools like Midjourney or ChatGPT?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p><strong>No.</strong> Training data provenance requirements apply only to AI models your studio owns, has trained, has fine-tuned, or has commissioned for exclusive use. Third-party services are governed by their providers and regulated separately. A studio using Midjourney can't meaningfully audit Midjourney's training corpus — that's Midjourney's responsibility and the job of the regulatory frameworks governing model providers. GAIT doesn't impose obligations studios can't fulfill.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<!-- ====== THE HARD QUESTIONS ====== -->
+<div class="faq-section" id="hard-questions">
+  <div class="faq-section-label">10</div>
+  <h2 class="faq-section-title">The Hard Questions</h2>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      If AI becomes ubiquitous in development, won't every game be Level 1.5 or above — making the label meaningless?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>This is the "shampoo argument"<span class="cite"><a href="https://www.gamespot.com/articles/ai-disclosures-make-no-sense-for-game-stores-tim-sweeney-says/1100-6536526/" target="_blank" rel="noopener">6</a><span class="cite-tip">GameSpot — "AI Disclosures 'Make No Sense' for Game Stores"</span></span> — the position that AI labeling is like disclosing what shampoo developers use. It's a real possibility, and GAIT takes it seriously.</p>
+      <p>Two responses. First, even if most games settle at Level 1.5 or 2, the <strong>upper levels remain meaningful.</strong> Players would still want to know whether a game generates NPC dialogue with an LLM in real time (Level 4) or whether all the art was AI-generated (Level 3: ART). The difference between "AI was used in development" and "AI is creating what you see and hear right now" matters regardless of how common the former becomes.</p>
+      <p>Second, the craft beer independence seal provides a precedent. The seal remains active with 5,700+ breweries eight years after launch<span class="cite"><a href="https://www.brewersassociation.org/independent-craft-brewer-seal/" target="_blank" rel="noopener">7</a><span class="cite-tip">Brewers Association — Independent Craft Brewer Seal</span></span> — even though the acquisition threat it was built to address has largely reversed. Labels can retain cultural and identity value even when market conditions shift. The bet is that the upper levels will always carry signal even if the lower levels become universal.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Survey data shows 85% negative sentiment, but games with AI controversies still sell millions. Does disclosure actually change behavior?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Probably not for most consumers, if the craft beer parallel holds. The 85% negative sentiment<span class="cite"><a href="https://quanticfoundry.com/2025/12/18/gen-ai/" target="_blank" rel="noopener">8</a><span class="cite-tip">Quantic Foundry — "How Do Gamers Feel About Generative AI?" Survey of 1,799 gamers, Oct–Dec 2025</span></span> is real, but stated preferences and purchasing behavior diverge. The Brewers Association independence seal reached 50%+ awareness among craft drinkers within three years, but Nielsen scanner data showed only a 0.2 percentage-point growth advantage for independent brands.<span class="cite"><a href="https://www.brewersassociation.org/insights/independent-craft-brewer-seal-steadily-gaining-awareness/" target="_blank" rel="noopener">9</a><span class="cite-tip">Brewers Association — "The Independent Craft Brewer Seal Is Steadily Gaining Awareness" (Nielsen scanner data, 2020)</span></span> People say they care; purchasing data is murkier.</p>
+      <p>GAIT is designed to work <strong>regardless of whether labels change purchasing behavior.</strong> Its value extends across four dimensions: (1) consumer information for the engaged minority who do act on disclosure; (2) regulatory compliance for studios navigating a multi-jurisdiction patchwork; (3) developer information — knowing your studio's GAIT level tells you where AI fits in your pipeline and your role; and (4) cultural signaling — a shared vocabulary that makes the conversation more precise than "AI bad" vs. "AI inevitable."</p>
+      <p>If it only achieves the fourth, that's still worth having.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Voluntary labels have a terrible track record. Loot box compliance on the Epic Games Store was 7%. Why would GAIT be different?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>It might not be, and GAIT is honest about that risk. The loot box disclosure data is damning for voluntary self-regulation — compliance rates ranged from 7% (Epic)<span class="cite"><a href="https://dl.acm.org/doi/10.1145/3630631" target="_blank" rel="noopener">10</a><span class="cite-tip">Xiao et al. — "Shopping Around for Loot Box Presence Warning Labels," Games: Research and Practice (ACM), 2023</span></span> to 89% (Microsoft), and South Korea's move to legal mandates produced higher compliance than any voluntary scheme.</p>
+      <p>GAIT is honest about this. Right now it's self-attestation — studios declare their level and maintain documentation. That's the same honor system Steam uses. If GAIT gains traction, stronger verification could develop: peer review, independent audits, a "GAIT Verified" designation. But building audit infrastructure before anyone has adopted the framework would be premature.</p>
+      <p>Let's be direct: if no platforms integrate the framework and no enforcement mechanism develops, GAIT will be exactly as weak as every other voluntary label. The framework's design can't overcome a collective action problem on its own. It can only make it easier to solve — and it starts with one person putting a proposal out there.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      What stops big publishers from defining AI use down to stay at a lower level?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>Honestly? Right now, nothing except the definitions themselves being public. GAIT is one person's proposal — there's no governance board, no formal revision process, no institutional safeguards yet. The craft beer independence seal's history shows what happens when definitions shift to accommodate powerful members: the Brewers Association revised its definition four times, each time accommodating its largest member.</p>
+      <p>If GAIT gains adoption, governance would need to follow — transparent revision processes, public comment periods, representation from studios, developers, and players. But those are structures you build when there's something to govern. For now, the best defense is that the definitions are public, the rationale is documented, and anyone can call out if they shift in self-serving directions.</p>
+    </div></div>
+  </div>
+
+  <div class="faq-item">
+    <button class="faq-question">
+      Isn't this really a labor issue being dressed up as consumer transparency?
+      <span class="faq-chevron"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></span>
+    </button>
+    <div class="faq-answer"><div class="faq-answer-inner">
+      <p>This is a genuinely sharp critique, and it has real force. GDC survey data shows negative AI sentiment is highest among visual artists (64%) and narrative designers (63%)<span class="cite"><a href="https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/" target="_blank" rel="noopener">11</a><span class="cite-tip">GDC 2026 State of the Game Industry Survey</span></span> — the people whose jobs are most directly threatened. Upper management uses AI tools at nearly twice the rate of rank-and-file workers.<span class="cite"><a href="https://www.gamedeveloper.com/business/one-third-of-game-workers-use-generative-ai-but-half-think-it-s-bad-for-the-industry" target="_blank" rel="noopener">19</a><span class="cite-tip">Game Developer — upper management (47%) vs. rank-and-file workers (29%)</span></span> Anti-AI sentiment within the industry maps closely to economic vulnerability.</p>
+      <p>GAIT doesn't pretend the labor dimension doesn't exist. Every level includes a "what this means for developers" dimension, and the Level 2/3 pipeline test explicitly maps to the labor question: Level 2 means creative professionals using new tools in their existing roles; Level 3 means those roles have been structurally reduced or replaced for specific content categories.</p>
+      <p>But labor concerns and consumer transparency aren't mutually exclusive — they're intertwined. Consumers who want to know whether a game's art was AI-generated are often motivated by the same values that make developers oppose wholesale AI replacement: that creative work by humans has distinctive value. The framework serves both audiences. Saying "it's really about labor" doesn't mean consumer disclosure is pointless; it means disclosure has more dimensions than pure product information.</p>
+    </div></div>
+  </div>
+
+
+</div>
+
+</div><!-- /container -->
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">GAIT</div>
+    <div class="footer-links">
+      <a href="gait-website.html">Home</a>
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-framework.html">Full Definition</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA">Register</a>
+    </div>
+  </div>
+  <div class="footer-copy">
+    GAIT: Game AI Transparency Framework · v1.0 · February 2026<br>
+    Open framework · Free to adopt · No membership required
+  </div>
+  <div class="footer-disclaimer">
+    GAIT is an informational framework only. Nothing herein constitutes legal advice. Adopting a GAIT level does not guarantee compliance with any government regulation or platform policy. Consult qualified legal counsel for jurisdiction-specific obligations.
+  </div>
+</footer>
+
+<script>
+// Accordion
+document.querySelectorAll('.faq-question').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const item = btn.parentElement;
+    const wasOpen = item.classList.contains('open');
+
+    // Optional: close siblings in same section
+    // item.parentElement.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+
+    if (wasOpen) {
+      item.classList.remove('open');
+    } else {
+      item.classList.add('open');
+    }
+  });
+});
+
+// Expand all toggle
+const expandBtn = document.getElementById('expand-all-btn');
+let allExpanded = false;
+expandBtn.addEventListener('click', () => {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.faq-item').forEach(item => {
+    if (allExpanded) {
+      item.classList.add('open');
+    } else {
+      item.classList.remove('open');
+    }
+  });
+  expandBtn.textContent = allExpanded ? 'Collapse all' : 'Expand all';
+});
+
+// Scroll fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.05 });
+
+document.querySelectorAll('.faq-section').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+
+// Open from hash
+if (window.location.hash) {
+  const target = document.querySelector(window.location.hash);
+  if (target) {
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 300);
+  }
+}
+</script>
+
+</body>
+</html>

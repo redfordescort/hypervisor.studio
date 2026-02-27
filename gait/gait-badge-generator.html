@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIT Badge Generator — Game AI Transparency Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gait-shared.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+
+/* ============ HERO ============ */
+.hero {
+  padding: 8rem 0 3rem; text-align: center;
+}
+.hero h1 {
+  font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800;
+  line-height: 1.15; margin-bottom: 0.75rem;
+}
+.hero p { color: var(--text-dim); font-size: 1.05rem; max-width: 520px; margin: 0 auto; }
+
+/* ============ BADGE GENERATOR ============ */
+.generator { padding: 0 0 4rem; }
+.generator-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: start;
+}
+
+/* Config panel */
+.config-panel {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;
+}
+.config-section { display: flex; flex-direction: column; gap: 0.5rem; }
+.config-section-label {
+  font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+}
+.config-section-desc {
+  font-size: 0.8rem; color: var(--text-dim); line-height: 1.5; margin-top: -0.15rem;
+}
+
+/* Level buttons */
+.level-buttons { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.level-btn {
+  background: var(--bg-elevated); color: var(--text); border: 2px solid var(--border);
+  border-radius: 8px; padding: 0.5rem 1rem; cursor: pointer; font-size: 0.82rem;
+  font-weight: 700; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 0.1rem; min-width: 70px;
+}
+.level-btn:hover { border-color: var(--text-muted); }
+.level-btn.active { border-color: var(--accent); background: var(--accent-dim); }
+.level-btn .level-num {
+  font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800;
+}
+.level-btn .level-name { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); }
+
+/* Tag buttons */
+.tag-buttons { display: flex; gap: 0.35rem; flex-wrap: wrap; }
+.tag-btn {
+  background: var(--bg-elevated); color: var(--text-dim); border: 2px solid var(--border);
+  border-radius: 6px; padding: 0.3rem 0.65rem; cursor: pointer; font-size: 0.72rem;
+  font-weight: 600; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+}
+.tag-btn:hover { border-color: var(--text-muted); color: var(--text); }
+.tag-btn.active { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+
+/* Sub-level section */
+.sub-level-group {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.sub-level-row { display: flex; flex-direction: column; gap: 0.4rem; }
+.sub-level-header { display: flex; align-items: center; gap: 0.5rem; }
+.sub-level-check {
+  display: flex; align-items: center; gap: 0.4rem; cursor: pointer;
+  font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
+}
+.sub-level-check input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+.sub-level-check:has(input:checked) { color: var(--text); }
+.sub-level-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; padding-left: 1.65rem; }
+
+/* Output panel */
+.output-panel { display: flex; flex-direction: column; gap: 1.5rem; align-items: center; }
+
+/* Badge preview wrapper */
+.badge-preview-wrap {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 2rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;
+  width: 100%;
+}
+
+/* Export / text output */
+.btn-export {
+  background: var(--accent); color: #fff; border: none; border-radius: 8px;
+  padding: 0.6rem 1.5rem; cursor: pointer; font-size: 0.82rem; font-weight: 700;
+  font-family: 'DM Sans', sans-serif; transition: opacity 0.15s;
+}
+.btn-export:hover { opacity: 0.85; }
+.btn-export:disabled { opacity: 0.5; cursor: wait; }
+
+.text-output-wrap {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 1.25rem; width: 100%; display: flex; flex-direction: column; gap: 0.6rem;
+}
+.text-output-label {
+  font-family: 'Outfit', sans-serif; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted);
+}
+.text-output-row { display: flex; gap: 0.5rem; align-items: center; }
+.text-output-value {
+  flex: 1; font-family: 'Space Mono', monospace; font-size: 0.9rem; color: var(--text);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+  padding: 0.6rem 0.85rem; white-space: nowrap; overflow-x: auto;
+}
+.btn-copy {
+  background: var(--bg-elevated); color: var(--text-dim); border: 2px solid var(--border);
+  border-radius: 6px; padding: 0.5rem 0.85rem; cursor: pointer; font-size: 0.75rem;
+  font-weight: 700; font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.btn-copy:hover { border-color: var(--text-muted); color: var(--text); }
+.btn-copy.copied { border-color: #16a34a; color: #16a34a; background: #dcfce7; }
+.text-output-hint { font-size: 0.7rem; color: var(--text-muted); }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .generator-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.8rem; }
+  .level-btn { min-width: 55px; padding: 0.4rem 0.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="preview-banner">
+  <strong>GAIT v1 now available for preview.</strong> Help define the future of AI in games by adopting GAIT and giving feedback.
+</div>
+
+<nav>
+  <div class="container">
+    <a href="gait-website.html" class="nav-logo">GAIT</a>
+    <div class="nav-links">
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-website.html#how-it-works">How It Works</a>
+      <a href="gait-framework.html">Framework</a>
+      <a href="gait-faq.html">FAQ</a>
+      <a href="gait-badge-generator.html" class="active">Badge Generator</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="nav-cta">Register Your Game</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <h1>Badge Generator</h1>
+    <p>Generate a GAIT badge for your game. Select your level, add content tags, and export.</p>
+  </div>
+</section>
+
+<section class="generator">
+  <div class="container">
+    <div class="generator-grid">
+
+      <!-- Config panel -->
+      <div class="config-panel">
+
+        <div class="config-section">
+          <div class="config-section-label">Level</div>
+          <div class="level-buttons" id="level-buttons"></div>
+          <div class="config-section-desc" id="level-desc"></div>
+        </div>
+
+        <div class="config-section" id="tags-section" style="display:none">
+          <div class="config-section-label">Content Tags</div>
+          <div class="tag-buttons" id="tag-buttons"></div>
+        </div>
+
+        <div class="config-section" id="subs-section" style="display:none">
+          <div class="config-section-label">Sub-Levels</div>
+          <div class="config-section-desc">Add lower levels for content categories that use less AI than the headline level.</div>
+          <div class="sub-level-group" id="sub-levels"></div>
+        </div>
+
+      </div>
+
+      <!-- Output panel -->
+      <div class="output-panel">
+        <div class="badge-preview-wrap">
+          <div id="badge-render"></div>
+          <button class="btn-export" id="export-btn" onclick="exportPNG()">Export as PNG</button>
+        </div>
+        <div class="text-output-wrap">
+          <div class="text-output-label">Text Format</div>
+          <div class="text-output-row">
+            <div class="text-output-value" id="text-output"></div>
+            <button class="btn-copy" id="copy-btn" onclick="copyText()">Copy</button>
+          </div>
+          <div class="text-output-hint">Use in storefronts, documentation, or anywhere images aren't supported.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<script>
+// ===== DATA =====
+const LEVELS = {
+  0:   { num: '0',   label: 'AI-FREE',       color: '#2f9e44', sublabel: 'Free',      desc: 'No generative AI used at any stage of development.' },
+  1:   { num: '1',   label: 'AI-ASSISTED',    color: '#2B7EB5', sublabel: 'Assisted',  desc: 'AI used in development (brainstorming, prototyping) but nothing AI-generated ships.' },
+  1.5: { num: '1.5', label: 'AI CODE',        color: '#4B94C8', sublabel: 'Code',      desc: 'AI code gen tools (Copilot, Claude Code, etc.) used; AI code ships but no AI creative content.' },
+  2:   { num: '2',   label: 'AI-AUGMENTED',   color: '#D4920F', sublabel: 'Augmented', desc: 'Human-led creative pipelines with AI tools integrated. AI accelerates, humans author.' },
+  3:   { num: '3',   label: 'AI-GENERATED',   color: '#D04A25', sublabel: 'Generated', desc: 'AI is the creative pipeline for specified content categories. Humans curate and QC.' },
+  4:   { num: '4',   label: 'LIVE AI',        color: '#9B3FD4', sublabel: 'Live AI',   desc: 'Real-time generative AI during gameplay (LLM NPCs, runtime content gen).' },
+};
+
+const TAGS_BY_LEVEL = {
+  2:   ['ART','AUDIO','VOICE','TEXT','LOC','VIDEO','3D'],
+  3:   ['ART','AUDIO','VOICE','TEXT','LOC','VIDEO','3D'],
+  4:   ['LIVE-DIALOGUE','LIVE-NARRATIVE','LIVE-ART','LIVE-AUDIO','LIVE-VOICE','LIVE-WORLD'],
+};
+
+// Sub-levels available per headline level, and what tags each sub-level offers
+const SUBS_BY_LEVEL = {
+  2:   [1.5],
+  3:   [2, 1.5],
+  4:   [3, 2, 1.5],
+};
+
+const SUB_TAGS = {
+  2:   ['ART','AUDIO','VOICE','TEXT','LOC','VIDEO','3D'],
+  3:   ['ART','AUDIO','VOICE','TEXT','LOC','VIDEO','3D'],
+  1.5: [],  // code-only, no tags
+};
+
+// ===== STATE =====
+let currentLevel = null;
+let headlineTags = [];
+let subLevelState = {};  // { 1.5: { enabled: false, tags: [] }, 2: { enabled: false, tags: [] }, ... }
+
+// ===== INIT =====
+function init() {
+  renderLevelButtons();
+  setLevel(0);
+}
+
+// ===== LEVEL BUTTONS =====
+function renderLevelButtons() {
+  const el = document.getElementById('level-buttons');
+  el.innerHTML = [0, 1, 1.5, 2, 3, 4].map(lv => {
+    const L = LEVELS[lv];
+    return `<button class="level-btn" data-level="${lv}" onclick="setLevel(${lv})">
+      <span class="level-num" style="color:${L.color}">${L.num}</span>
+      <span class="level-name">${L.sublabel}</span>
+    </button>`;
+  }).join('');
+}
+
+function setLevel(lv) {
+  currentLevel = lv;
+  headlineTags = [];
+  subLevelState = {};
+
+  // Highlight active button
+  document.querySelectorAll('.level-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.level) === lv);
+  });
+
+  // Description
+  document.getElementById('level-desc').textContent = LEVELS[lv].desc;
+
+  // Show/hide tags
+  const tagsSection = document.getElementById('tags-section');
+  if (TAGS_BY_LEVEL[lv]) {
+    tagsSection.style.display = '';
+    renderTagButtons();
+  } else {
+    tagsSection.style.display = 'none';
+  }
+
+  // Show/hide sub-levels
+  const subsSection = document.getElementById('subs-section');
+  if (SUBS_BY_LEVEL[lv]) {
+    subsSection.style.display = '';
+    SUBS_BY_LEVEL[lv].forEach(sl => {
+      subLevelState[sl] = { enabled: false, tags: [] };
+    });
+    renderSubLevels();
+  } else {
+    subsSection.style.display = 'none';
+  }
+
+  updateOutput();
+}
+
+// ===== HEADLINE TAGS =====
+function renderTagButtons() {
+  const tags = TAGS_BY_LEVEL[currentLevel] || [];
+  document.getElementById('tag-buttons').innerHTML = tags.map(t =>
+    `<button class="tag-btn ${headlineTags.includes(t) ? 'active' : ''}" onclick="toggleHeadlineTag('${t}')">${t}</button>`
+  ).join('');
+}
+
+function toggleHeadlineTag(tag) {
+  if (headlineTags.includes(tag)) headlineTags = headlineTags.filter(t => t !== tag);
+  else headlineTags.push(tag);
+  renderTagButtons();
+  updateOutput();
+}
+
+// ===== SUB-LEVELS =====
+function renderSubLevels() {
+  const subs = SUBS_BY_LEVEL[currentLevel] || [];
+  const el = document.getElementById('sub-levels');
+  el.innerHTML = subs.map(sl => {
+    const L = LEVELS[sl];
+    const state = subLevelState[sl];
+    const hasTags = SUB_TAGS[sl] && SUB_TAGS[sl].length > 0;
+    let html = `<div class="sub-level-row">
+      <div class="sub-level-header">
+        <label class="sub-level-check">
+          <input type="checkbox" ${state.enabled ? 'checked' : ''} onchange="toggleSubLevel(${sl})">
+          <span style="color:${L.color}">${L.num}</span> ${L.sublabel}
+        </label>
+      </div>`;
+    if (state.enabled && hasTags) {
+      html += `<div class="sub-level-tags">`;
+      html += SUB_TAGS[sl].map(t =>
+        `<button class="tag-btn ${state.tags.includes(t) ? 'active' : ''}" onclick="toggleSubTag(${sl},'${t}')">${t}</button>`
+      ).join('');
+      html += `</div>`;
+    }
+    html += `</div>`;
+    return html;
+  }).join('');
+}
+
+function toggleSubLevel(sl) {
+  subLevelState[sl].enabled = !subLevelState[sl].enabled;
+  if (!subLevelState[sl].enabled) subLevelState[sl].tags = [];
+  renderSubLevels();
+  updateOutput();
+}
+
+function toggleSubTag(sl, tag) {
+  const tags = subLevelState[sl].tags;
+  if (tags.includes(tag)) subLevelState[sl].tags = tags.filter(t => t !== tag);
+  else tags.push(tag);
+  renderSubLevels();
+  updateOutput();
+}
+
+// ===== BADGE RENDERING =====
+function renderBadge(level, tags, subLevels) {
+  const L = LEVELS[level];
+  let html = `<div class="badge badge--large">`;
+
+  html += `<div class="badge__band" style="background:${L.color}">`;
+  html += `<span class="badge__gait">GAIT</span>`;
+  html += `<span class="badge__subtitle">GAME AI TRANSPARENCY</span>`;
+  html += `</div>`;
+
+  const wideNum = level === 1.5 ? ' badge__body--wide-num' : '';
+  html += `<div class="badge__body${wideNum}">`;
+  html += `<div class="badge__num">${L.num}</div>`;
+  html += `<div class="badge__label-wrap"><div class="badge__label" style="color:${L.color}">${L.label}</div></div>`;
+  html += `</div>`;
+
+  if (tags.length > 0) {
+    html += `<div class="badge__tags">`;
+    tags.forEach(t => { html += `<span class="badge__tag">${t}</span>`; });
+    html += `</div>`;
+  }
+
+  if (subLevels.length > 0) {
+    html += `<hr class="badge__sep">`;
+    html += `<div class="badge__subs">`;
+    subLevels.forEach(sub => {
+      const SL = LEVELS[sub.level];
+      html += `<div class="badge__sub">`;
+      html += `<span class="badge__sub-pill" style="background:${SL.color}">`;
+      html += `<span class="badge__sub-pill-num">${SL.num}</span>`;
+      html += `<span class="badge__sub-pill-label">${SL.sublabel}</span>`;
+      html += `</span>`;
+      if (sub.tags.length > 0) {
+        html += `<div class="badge__sub-tags">`;
+        sub.tags.forEach(t => { html += `<span class="badge__sub-tag">${t}</span>`; });
+        html += `</div>`;
+      }
+      html += `</div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
+// ===== TEXT FORMAT =====
+function buildTextFormat(level, tags, subLevels) {
+  let text = `GAIT ${LEVELS[level].num}`;
+  if (tags.length > 0) text += `: ${tags.join(', ')}`;
+  subLevels.forEach(sub => {
+    text += ` | ${LEVELS[sub.level].num}`;
+    if (sub.tags.length > 0) text += `: ${sub.tags.join(', ')}`;
+  });
+  return text;
+}
+
+// ===== UPDATE OUTPUT =====
+function updateOutput() {
+  const subs = [];
+  const subKeys = SUBS_BY_LEVEL[currentLevel] || [];
+  subKeys.forEach(sl => {
+    if (subLevelState[sl] && subLevelState[sl].enabled) {
+      subs.push({ level: sl, tags: [...subLevelState[sl].tags] });
+    }
+  });
+
+  document.getElementById('badge-render').innerHTML = renderBadge(currentLevel, headlineTags, subs);
+  document.getElementById('text-output').textContent = buildTextFormat(currentLevel, headlineTags, subs);
+}
+
+// ===== EXPORT PNG =====
+function exportPNG() {
+  const badge = document.querySelector('#badge-render .badge');
+  if (!badge) return;
+  const btn = document.getElementById('export-btn');
+  btn.disabled = true;
+  btn.textContent = 'Exporting\u2026';
+  html2canvas(badge, { backgroundColor: null, scale: 3 }).then(canvas => {
+    const link = document.createElement('a');
+    let fname = `gait-${LEVELS[currentLevel].num}`;
+    if (headlineTags.length > 0) fname += '-' + headlineTags.join('-');
+    const subs = [];
+    (SUBS_BY_LEVEL[currentLevel] || []).forEach(sl => {
+      if (subLevelState[sl] && subLevelState[sl].enabled) {
+        fname += `_${LEVELS[sl].num}`;
+        if (subLevelState[sl].tags.length > 0) fname += '-' + subLevelState[sl].tags.join('-');
+      }
+    });
+    link.download = fname.toLowerCase().replace(/\s+/g, '') + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.disabled = false;
+    btn.textContent = 'Export as PNG';
+  }).catch(() => {
+    btn.disabled = false;
+    btn.textContent = 'Export as PNG';
+  });
+}
+
+// ===== COPY TO CLIPBOARD =====
+function copyText() {
+  const text = document.getElementById('text-output').textContent;
+  const btn = document.getElementById('copy-btn');
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ===== GO =====
+init();
+</script>
+</body>
+</html>

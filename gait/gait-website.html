@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAIT — Game AI Transparency Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gait-shared.css">
+<style>
+
+/* ============ HERO ============ */
+.hero {
+  padding: 12rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero-row {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+}
+.hero-text { flex: 1; min-width: 0; }
+.hero-badge-area {
+  flex-shrink: 0;
+  opacity: 0;
+  animation: fadeUp 0.7s ease-out 0.35s forwards;
+  transform-origin: top right;
+  scale: 1.6;
+  margin-right: 3rem;
+}
+@media (max-width: 900px) {
+  .hero-row { flex-direction: column; align-items: flex-start; }
+  .hero-badge-area { align-self: center; scale: 1.3; margin-right: 0; transform-origin: top center; }
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -100px; left: -200px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.hero-eyebrow::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--accent);
+}
+.hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.75rem;
+  max-width: 800px;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent) 0%, #4f46e5 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.2rem;
+  color: var(--text-dim);
+  max-width: 620px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+}
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: opacity 0.2s, transform 0.15s;
+  letter-spacing: 0.01em;
+}
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  background: transparent;
+  color: var(--text-dim);
+  padding: 0.9rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s;
+}
+.btn-secondary:hover {
+  border-color: var(--text-dim);
+  color: var(--text);
+}
+
+/* ============ SECTIONS ============ */
+section { padding: 5rem 0; }
+
+.section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1rem;
+  line-height: 1.15;
+}
+.section-desc {
+  color: var(--text-dim);
+  font-size: 1.05rem;
+  max-width: 600px;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+}
+
+/* Citation tooltip position override (above, not below) */
+.cite .cite-tip { bottom: calc(100% + 4px); top: auto; }
+
+/* ============ WHY SECTION ============ */
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.why-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.25s, background 0.25s;
+}
+.why-card:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+}
+.why-card-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+.why-card h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.why-card p {
+  color: var(--text-dim);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+/* Card variants */
+.card-studio .why-card-icon { background: rgba(217, 119, 6, 0.1); }
+.card-dev .why-card-icon { background: rgba(37, 99, 235, 0.1); }
+.card-player .why-card-icon { background: rgba(22, 163, 74, 0.1); }
+
+/* ============ LEVELS ============ */
+.levels-section { padding-bottom: 4rem; }
+
+.levels-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 768px) { .levels-grid { grid-template-columns: 1fr; } }
+
+.level-item {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  align-items: start;
+  transition: border-color 0.25s;
+}
+.level-item:hover { border-color: var(--border-light); }
+
+.level-badge {
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  border: 2px solid;
+  position: relative;
+  flex-shrink: 0;
+}
+.level-badge .level-num {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+.level-badge .level-sub {
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 1px;
+  opacity: 0.7;
+}
+
+.l0-badge { border-color: var(--l0); color: var(--l0); background: rgba(22, 163, 74, 0.08); }
+.l1-badge { border-color: var(--l1); color: var(--l1); background: rgba(37, 99, 235, 0.08); }
+.l15-badge { border-color: var(--l15); color: var(--l15); background: rgba(99, 102, 241, 0.08); }
+.l2-badge { border-color: var(--l2); color: var(--l2); background: rgba(217, 119, 6, 0.08); }
+.l3-badge { border-color: var(--l3); color: var(--l3); background: rgba(234, 88, 12, 0.08); }
+.l4-badge { border-color: var(--l4); color: var(--l4); background: rgba(220, 38, 38, 0.08); }
+
+.level-content h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+.level-content .level-headline {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+  margin-bottom: 0.5rem;
+}
+.level-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.level-tag {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+/* ============ HOW IT WORKS ============ */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  counter-reset: step;
+}
+.step {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  counter-increment: step;
+  position: relative;
+  transition: border-color 0.25s;
+}
+.step:hover { border-color: var(--accent); }
+.step::before {
+  content: counter(step);
+  font-family: 'Outfit', sans-serif;
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--border);
+  line-height: 1;
+  margin-bottom: 1rem;
+  display: block;
+}
+.step h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.65rem;
+}
+.step p {
+  color: var(--text-dim);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+/* ============ CONSTITUENCY SECTION ============ */
+.constituent-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+@media (max-width: 900px) { .constituent-grid { grid-template-columns: 1fr; } }
+
+.constituent-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: border-color 0.25s;
+}
+.constituent-card:hover { border-color: var(--border-light); }
+
+.constituent-card h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+.constituent-card > p {
+  color: var(--text-dim);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+.benefit-list {
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 1.5rem;
+}
+.benefit-list li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.benefit-list li::before {
+  content: '\2192';
+  color: var(--accent);
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 0.1em;
+}
+
+/* ============ RED LINES ============ */
+.redlines {
+  background: var(--bg-elevated);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.redline-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+.redline-card {
+  padding: 1.75rem;
+  border-left: 3px solid #ef4444;
+  background: rgba(239, 68, 68, 0.06);
+  border-radius: 0 8px 8px 0;
+}
+.redline-card h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #dc2626;
+}
+.redline-card p {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* ============ BADGE SECTION ============ */
+.badge-explainer {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3rem;
+  align-items: start;
+  margin-bottom: 3rem;
+}
+@media (max-width: 768px) {
+  .badge-explainer { grid-template-columns: 1fr; justify-items: center; }
+}
+.badge-annotations {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.badge-annotation {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+.badge-annotation-marker {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.75rem;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.badge-annotation h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+.badge-annotation p {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.55;
+}
+.text-format-box {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 2.5rem;
+}
+.text-format-box h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.text-format-example {
+  font-family: 'Space Mono', monospace;
+  font-size: 1rem;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+.text-format-breakdown {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.65;
+}
+
+/* Hide compact-only elements in large */
+.badge--large .badge__compact-header,
+.badge--large .badge__compact-rows { display: none; }
+
+/* BADGE — COMPACT */
+.badge--compact {
+  width: auto; min-width: 140px; max-width: 240px;
+  border-width: 2px; border-color: #ccc; border-radius: 4px;
+}
+
+/* Hide full-size elements in compact */
+.badge--compact .badge__band,
+.badge--compact .badge__body,
+.badge--compact .badge__tags,
+.badge--compact .badge__sep,
+.badge--compact .badge__subs { display: none; }
+
+.badge__compact-header {
+  display: none;
+  font-family: var(--font-gait); font-weight: 700;
+  letter-spacing: 0.12em; font-size: 9px; color: #888;
+  text-align: center; padding: 3px 6px 2px;
+  border-bottom: 1px solid #ddd;
+}
+.badge--compact .badge__compact-header { display: block; }
+
+.badge__compact-rows {
+  display: none;
+  flex-direction: column; gap: 4px; padding: 5px 6px 6px;
+}
+.badge--compact .badge__compact-rows { display: flex; }
+
+.badge__crow {
+  display: flex; align-items: flex-start; gap: 5px;
+  border: 1px solid #ddd; border-radius: 3px; padding: 3px 5px;
+}
+
+.badge__crow-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  color: white; font-weight: 700; border-radius: 3px;
+  flex-shrink: 0; line-height: 1; white-space: nowrap;
+  font-size: 11px; padding: 4px 8px; min-width: 90px;
+}
+.badge__crow-pill-num { font-weight: 800; font-family: var(--font-num); }
+.badge__crow-pill-label { font-weight: 600; font-size: 10px; }
+
+.badge__crow-tags {
+  display: flex; flex-wrap: wrap; gap: 3px;
+  min-width: 0; flex: 1; align-items: center;
+  padding-top: 1px;
+}
+.badge__crow-tag {
+  color: #444; font-weight: 600; line-height: 1;
+  background: #e9ecef; border-radius: 2px; white-space: nowrap;
+  font-size: 10px; padding: 2px 5px;
+}
+
+/* ============ CTA ============ */
+.cta-section {
+  text-align: center;
+  padding: 6rem 0;
+}
+.cta-section .section-title { margin: 0 auto 1rem; max-width: 600px; }
+.cta-section .section-desc { margin: 0 auto 2.5rem; text-align: center; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .level-item { grid-template-columns: 44px 1fr; gap: 1rem; }
+  .level-badge { width: 44px; height: 44px; }
+  .level-badge .level-num { font-size: 1.1rem; }
+  .hero { padding: 10rem 0 4rem; }
+}
+
+/* ============ ANIMATIONS ============ */
+.fade-up {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+.fade-up:nth-child(2) { animation-delay: 0.1s; }
+.fade-up:nth-child(3) { animation-delay: 0.2s; }
+.fade-up:nth-child(4) { animation-delay: 0.3s; }
+
+.hero-eyebrow, .hero h1, .hero-sub, .hero-actions {
+  opacity: 0;
+  animation: fadeUp 0.7s ease-out forwards;
+}
+.hero h1 { animation-delay: 0.1s; }
+.hero-sub { animation-delay: 0.2s; }
+.hero-actions { animation-delay: 0.3s; }
+</style>
+</head>
+<body>
+
+<!-- PREVIEW BANNER -->
+<div class="preview-banner">
+  <strong>GAIT v1 now available for preview.</strong> Help define the future of AI in games by adopting GAIT and giving feedback.
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="container">
+    <a href="gait-website.html" class="nav-logo">GAIT</a>
+    <div class="nav-links">
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-website.html#how-it-works">How It Works</a>
+      <a href="gait-framework.html">Framework</a>
+      <a href="gait-faq.html">FAQ</a>
+      <a href="gait-badge-generator.html">Badge Generator</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="nav-cta">Register Your Game</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-row">
+      <div class="hero-text">
+        <div class="hero-eyebrow">Game AI Transparency Framework</div>
+        <h1>Tell players <em>how AI shapes</em> your game.</h1>
+        <p class="hero-sub">
+          GAIT is a free, voluntary disclosure framework that gives studios a shared language for communicating generative AI use — from AI-free to live AI systems. Adopt a level. Display a badge. Build trust.
+        </p>
+        <div class="hero-actions">
+          <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="btn-primary">Register Your Game →</a>
+          <a href="#levels" class="btn-secondary">See the Levels</a>
+        </div>
+      </div>
+      <div class="hero-badge-area" id="hero-badge"></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- WHY -->
+<section id="why">
+  <div class="container">
+    <div class="section-label">The Problem</div>
+    <h2 class="section-title">The industry has no shared language for AI transparency.</h2>
+    <p class="section-desc">
+      Steam is the only major platform with AI disclosure — and it's an honor system with two categories.<span class="cite"><a href="https://techxplore.com/news/2026-02-video-game-ai-players-patchy.html" target="_blank" rel="noopener">1</a><span class="cite-tip">The Conversation / Techxplore — "Are video game developers using AI? Players want to know, but the rules are patchy," Feb 2026</span></span> Console platforms, mobile stores, and the ESA have nothing.<span class="cite"><a href="https://files.nitrd.gov/90-fr-9088/Entertainment-Software-Association-AI-RFI-2025.pdf" target="_blank" rel="noopener">2</a><span class="cite-tip">ESA filing to OSTP, March 2025 — characterized game AI as "low- to no-risk," proposed no voluntary disclosure standard</span></span> Players are angry. Regulators are moving. Studios are guessing.
+    </p>
+    <div class="why-grid">
+      <div class="why-card card-studio">
+        <div class="why-card-icon">🏢</div>
+        <h3>Studios face a patchwork</h3>
+        <p>Steam requires disclosure. Epic refuses it.<span class="cite"><a href="https://www.gamespot.com/articles/ai-disclosures-make-no-sense-for-game-stores-tim-sweeney-says/1100-6536526/" target="_blank" rel="noopener">3</a><span class="cite-tip">GameSpot — "AI Disclosures 'Make No Sense' for Game Stores, Tim Sweeney Says"</span></span> The EU AI Act takes effect in August 2026.<span class="cite"><a href="https://artificialintelligenceact.eu/article/50/" target="_blank" rel="noopener">4</a><span class="cite-tip">EU AI Act, Article 50 — Transparency obligations for providers and deployers of certain AI systems</span></span> South Korea's framework is already live.<span class="cite"><a href="https://www.loc.gov/item/global-legal-monitor/2026-02-20/south-korea-comprehensive-ai-legal-framework-takes-effect" target="_blank" rel="noopener">5</a><span class="cite-tip">Library of Congress — "South Korea: Comprehensive AI Legal Framework Takes Effect," Feb 2026</span></span> Without a cross-platform standard, compliance is a per-storefront exercise.</p>
+      </div>
+      <div class="why-card card-dev">
+        <div class="why-card-icon">🛠</div>
+        <h3>Developers lack clarity</h3>
+        <p>52% of developers view generative AI negatively<span class="cite"><a href="https://gdconf.com/article/gdc-2026-state-of-the-game-industry-reveals-impact-of-layoffs-generative-ai-and-more/" target="_blank" rel="noopener">6</a><span class="cite-tip">GDC 2026 State of the Game Industry Survey — up from 30% in 2025 and 18% in 2024</span></span>, but 36% use it<span class="cite"><a href="https://www.gamedeveloper.com/business/one-third-of-game-workers-use-generative-ai-but-half-think-it-s-bad-for-the-industry" target="_blank" rel="noopener">6</a><span class="cite-tip">Game Developer — "One-third of game workers use generative AI, but half think it's bad for the industry"</span></span>. Nobody agrees on what counts — does Copilot require disclosure? AI-assisted concept art? Localization tools? The lines are undefined.</p>
+      </div>
+      <div class="why-card card-player">
+        <div class="why-card-icon">🎮</div>
+        <h3>Players can't make informed choices</h3>
+        <p>Negative sentiment toward AI in games is at 85% among surveyed core gamers<span class="cite"><a href="https://quanticfoundry.com/2025/12/18/gen-ai/" target="_blank" rel="noopener">7</a><span class="cite-tip">Quantic Foundry — "How Do Gamers Feel About Generative AI?" Survey of 1,799 gamers, Oct–Dec 2025</span></span>. But there's no standardized way to know what's AI-generated in a game. Consumers can't reward transparency or avoid what they don't want.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LEVELS -->
+<section id="levels" class="levels-section">
+  <div class="container">
+    <div class="section-label">The Framework</div>
+    <h2 class="section-title">Six levels. One question at each: what AI reaches the player?</h2>
+    <p class="section-desc">
+      GAIT classifies games by what generative AI content ships in the product — not what tools were used behind the scenes.
+    </p>
+
+    <div class="levels-grid">
+      <div class="level-item">
+        <div class="level-badge l0-badge"><span class="level-num">0</span></div>
+        <div class="level-content">
+          <h3>AI-Free</h3>
+          <p class="level-headline">No generative AI used at any stage. Everything — art, music, writing, code, voice, translations — is human-made.</p>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l2-badge"><span class="level-num">2</span></div>
+        <div class="level-content">
+          <h3>AI-Augmented</h3>
+          <p class="level-headline">AI tools in human-led creative pipelines. Humans make core aesthetic, narrative, and design decisions. AI accelerates; humans author.</p>
+          <div class="level-tags">
+            <span class="level-tag">ART</span>
+            <span class="level-tag">AUDIO</span>
+            <span class="level-tag">3D</span>
+            <span class="level-tag">LOC</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l1-badge"><span class="level-num">1</span></div>
+        <div class="level-content">
+          <h3>AI-Assisted Dev</h3>
+          <p class="level-headline">Generative AI used during development (brainstorming, prototyping, research), but nothing AI-generated reaches the player. Everything players experience is human-made.</p>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l3-badge"><span class="level-num">3</span></div>
+        <div class="level-content">
+          <h3>AI-Generated Content</h3>
+          <p class="level-headline">AI is the primary creator for one or more content categories. Humans curate and QC, but AI generates the foundational assets.</p>
+          <div class="level-tags">
+            <span class="level-tag">ART</span>
+            <span class="level-tag">AUDIO</span>
+            <span class="level-tag">VOICE</span>
+            <span class="level-tag">TEXT</span>
+            <span class="level-tag">LOC</span>
+            <span class="level-tag">VIDEO</span>
+            <span class="level-tag">3D</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l15-badge"><span class="level-num">1.5</span></div>
+        <div class="level-content">
+          <h3>AI Code</h3>
+          <p class="level-headline">AI code generation tools (Copilot, Cursor, Claude Code) in the toolchain — AI-generated code ships. All creative content remains human-authored.</p>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l4-badge"><span class="level-num">4</span></div>
+        <div class="level-content">
+          <h3>Live AI</h3>
+          <p class="level-headline">Real-time generative AI during gameplay — LLM-powered NPCs, runtime quests, live synthesis, or any non-deterministic AI output during play.</p>
+          <div class="level-tags">
+            <span class="level-tag">LIVE-DIALOGUE</span>
+            <span class="level-tag">LIVE-NARRATIVE</span>
+            <span class="level-tag">LIVE-ART</span>
+            <span class="level-tag">LIVE-WORLD</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      <a href="gait-framework.html" class="btn-secondary">Read the Full Definition →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BADGES -->
+<section id="badges" style="border-top: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-label">Visual Identity</div>
+    <h2 class="section-title">Anatomy of a GAIT badge.</h2>
+    <p class="section-desc">
+      A single badge captures the full AI profile of a game — headline level, content tags, and sub-level breakdowns. Color progresses from green to purple with increasing AI involvement.
+    </p>
+
+    <div class="badge-explainer">
+      <div id="explainer-badge"></div>
+      <div class="badge-annotations">
+        <div class="badge-annotation">
+          <div class="badge-annotation-marker">1</div>
+          <div>
+            <h4>Headline level</h4>
+            <p>The highest GAIT level present in the game. This is what players see first — the "top-line" AI disclosure. Here, Level 4 (Live AI) is the headline because real-time AI runs during gameplay.</p>
+          </div>
+        </div>
+        <div class="badge-annotation">
+          <div class="badge-annotation-marker">2</div>
+          <div>
+            <h4>Content tags</h4>
+            <p>Tags specify which content categories are affected at the headline level. LIVE-DIALOGUE and LIVE-NARRATIVE tell players exactly which gameplay systems use real-time AI.</p>
+          </div>
+        </div>
+        <div class="badge-annotation">
+          <div class="badge-annotation-marker">3</div>
+          <div>
+            <h4>Sub-level breakdown</h4>
+            <p>Games often use AI differently across content types. Sub-levels show the full picture: here, 3D assets and voice are AI-generated (Level 3), art pipelines are AI-augmented (Level 2), and code uses AI tools (Level 1.5).</p>
+          </div>
+        </div>
+        <div class="badge-annotation">
+          <div class="badge-annotation-marker">4</div>
+          <div>
+            <h4>Per-category tags</h4>
+            <p>Each sub-level has its own tags so players can see exactly what's AI-generated vs. AI-augmented vs. just code tools. Full transparency at a glance.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-format-box">
+      <h3>Text format</h3>
+      <div class="text-format-example">GAIT 4: LIVE-DIALOGUE, LIVE-NARRATIVE / 3: 3D, VOICE, LOC / 2: ART / 1.5</div>
+      <p class="text-format-breakdown">
+        For metadata, APIs, and plain text contexts where a badge can't render. Same structure: headline level and tags, then sub-levels separated by slashes. The display format is <span class="mono" style="font-size: 0.85em;">GAIT [Level]: [Tags]</span>.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- RED LINES -->
+<section class="redlines" id="red-lines">
+  <div class="container">
+    <div class="section-label">Non-Negotiable</div>
+    <h2 class="section-title">Three red lines apply at every level.</h2>
+    <p class="section-desc" style="margin-bottom: 2rem;">
+      These are conditions of participation, not guidelines. Violate one and the GAIT designation is forfeit.
+    </p>
+    <div class="redline-grid">
+      <div class="redline-card">
+        <h4>No Unconsented Creative Replication</h4>
+        <p>No using AI to replicate a performer's voice, likeness, motion capture, artistic style, or musical composition without their informed, documented, compensated consent.</p>
+      </div>
+      <div class="redline-card">
+        <h4>No Concealment</h4>
+        <p>Studios must not hide AI use that would place them at a higher level. QA failures are correctable. Cover-ups are disqualifying.</p>
+      </div>
+      <div class="redline-card">
+        <h4>No Unguarded AI for Minors</h4>
+        <p>Games rated for minors that use live generative AI must implement content filtering, output monitoring, and human review appropriate to the age rating.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section id="who">
+  <div class="container">
+    <div class="section-label">Constituencies</div>
+    <h2 class="section-title">Built for everyone who touches the game.</h2>
+    <p class="section-desc">GAIT serves studios, individual developers, and players — each with different stakes in transparency.</p>
+
+    <div class="constituent-grid">
+      <div class="constituent-card">
+        <h3>Studios & Publishers</h3>
+        <p>GAIT gives your studio a credible, structured way to communicate AI use — before regulators mandate one for you. The EU AI Act takes effect August 2026.<span class="cite"><a href="https://artificialintelligenceact.eu/article/50/" target="_blank" rel="noopener">4</a><span class="cite-tip">EU AI Act, Article 50 — Transparency obligations for providers and deployers of certain AI systems</span></span> South Korea's framework is already live.<span class="cite"><a href="https://www.loc.gov/item/global-legal-monitor/2026-02-20/south-korea-comprehensive-ai-legal-framework-takes-effect" target="_blank" rel="noopener">5</a><span class="cite-tip">Library of Congress — "South Korea: Comprehensive AI Legal Framework Takes Effect," Feb 2026</span></span></p>
+        <ul class="benefit-list">
+          <li>Map AI use to a clear level that players, press, and regulators understand</li>
+          <li>Regulatory crosswalk covers 8+ jurisdictions</li>
+          <li>Differentiate your studio — AI-free or AI-forward, transparency builds trust</li>
+          <li>Display badges on storefronts, packaging, and in-game menus</li>
+          <li>Structured documentation for regulatory audits</li>
+        </ul>
+      </div>
+
+      <div class="constituent-card">
+        <h3>Developers</h3>
+        <p>GAIT was designed with the workforce in mind. Every level includes "what this means for developers" — because transparency isn't just about consumers, it's about the people making the games.</p>
+        <ul class="benefit-list">
+          <li>Clear definitions of AI-assisted vs. AI-generated in your work</li>
+          <li>Level 2 vs. 3 maps to whether AI is a tool in your workflow or a replacement for it</li>
+          <li>Solo developer guidance with the primary authorship test</li>
+          <li>Red Line 1 protects performer consent — your voice, likeness, and style require your permission</li>
+          <li>Neutral on whether AI is good or bad — describes, doesn't prescribe</li>
+        </ul>
+      </div>
+
+      <div class="constituent-card">
+        <h3>Players</h3>
+        <p>Instead of guessing whether a game used AI — or waiting for someone on Reddit to find a ChatGPT prompt left in the text — you get a standardized label telling you what AI content is in the game you're buying.</p>
+        <ul class="benefit-list">
+          <li>Know before you buy: the GAIT level tells you what AI reaches you as a player</li>
+          <li>Content tags (ART, VOICE, TEXT, etc.) specify exactly which categories</li>
+          <li>Levels 0 and 1 mean no AI-generated content in the product you play</li>
+          <li>Level 4 discloses live AI systems during gameplay</li>
+          <li>Gives you the facts to decide for yourself</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works" style="border-top: 1px solid var(--border);">
+  <div class="container">
+    <div class="section-label">Getting Started</div>
+    <h2 class="section-title">Adopt GAIT in four steps.</h2>
+    <p class="section-desc">Registration is free, self-service, and based on self-attestation.</p>
+
+    <div class="steps">
+      <div class="step">
+        <h3>Assess your level</h3>
+        <p>Review the level definitions and determine which GAIT level applies to your game. The core question: what generative AI content, if any, reaches the player?</p>
+      </div>
+      <div class="step">
+        <h3>Register</h3>
+        <p>Fill out the GAIT Self-Assessment Questionnaire on this site. You'll declare your level, applicable content tags, and confirm compliance with the three red lines.</p>
+      </div>
+      <div class="step">
+        <h3>Maintain documentation</h3>
+        <p>Keep the documentation required for your declared level on file. This is your evidence base — for platform partners, regulators, and press.</p>
+      </div>
+      <div class="step">
+        <h3>Display your badge</h3>
+        <p>Place the GAIT badge on your storefront page, packaging, and/or in-game settings menu. Badge assets and usage guidelines are provided upon registration.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="register">
+  <div class="container">
+    <div class="section-label" style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.75rem;">
+      <span style="width: 32px; height: 1px; background: var(--accent); display: inline-block;"></span>
+      Get started
+      <span style="width: 32px; height: 1px; background: var(--accent); display: inline-block;"></span>
+    </div>
+    <h2 class="section-title">Ready to label your game?</h2>
+    <p class="section-desc">
+      Registration takes about five minutes. You'll identify your GAIT level, confirm the red lines, and get access to badge assets for your storefront and packaging.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="btn-primary" style="font-size: 1.05rem; padding: 1rem 2.5rem;">Register Your Game →</a>
+      <a href="gait-framework.html" class="btn-secondary">Read the Full Definition</a>
+    </div>
+    <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 1.5rem;">
+      Free to participate · No membership required · Self-assessment to start
+    </p>
+  </div>
+</section>
+
+<!-- FORMAL DEFINITION LINK -->
+<section id="definition" style="border-top: 1px solid var(--border); padding: 4rem 0;">
+  <div class="container" style="text-align: center;">
+    <div class="section-label" style="text-align: center; display: flex; justify-content: center; align-items: center; gap: 0.75rem;">
+      <span style="width: 32px; height: 1px; background: var(--text-muted); display: inline-block;"></span>
+      Reference
+      <span style="width: 32px; height: 1px; background: var(--text-muted); display: inline-block;"></span>
+    </div>
+    <h2 class="section-title" style="max-width: 500px; margin: 0 auto 1rem;">The full GAIT definition.</h2>
+    <p class="section-desc" style="text-align: center; margin: 0 auto 2rem;">
+      The complete framework specification — every level, every tag, every regulatory mapping, every edge case. This is the canonical reference document.
+    </p>
+    <a href="gait-framework.html" class="btn-secondary" style="font-size: 1rem; padding: 0.9rem 2rem;">
+      Read the Definition Document →
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-logo">GAIT</div>
+      <div class="footer-links">
+        <a href="#levels">Levels</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="gait-framework.html">Full Definition</a>
+        <a href="https://forms.gle/eFnByzmrnyPEuLEbA">Register</a>
+      </div>
+    </div>
+    <div class="footer-copy">
+      GAIT: Game AI Transparency Framework · v1.0 · February 2026<br>
+      Open framework · Free to adopt · No membership required
+    </div>
+    <div class="footer-disclaimer">
+      GAIT is an informational framework only. Nothing herein constitutes legal advice. Adopting a GAIT level does not guarantee compliance with any government regulation or platform policy. Consult qualified legal counsel for jurisdiction-specific obligations.
+    </div>
+  </div>
+</footer>
+
+<script>
+// Simple scroll-triggered fade-in
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.why-card, .level-item, .step, .redline-card, .constituent-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(16px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(el);
+});
+
+// Badge rendering
+const LEVELS = {
+  0:   { num: '0',   label: 'AI-FREE',     color: '#2f9e44', sublabel: 'Free' },
+  1:   { num: '1',   label: 'AI-ASSISTED',  color: '#2B7EB5', sublabel: 'Assisted' },
+  1.5: { num: '1.5', label: 'AI CODE',      color: '#4B94C8', sublabel: 'Code' },
+  2:   { num: '2',   label: 'AI-AUGMENTED', color: '#D4920F', sublabel: 'Augmented' },
+  3:   { num: '3',   label: 'AI-GENERATED', color: '#D04A25', sublabel: 'Generated' },
+  4:   { num: '4',   label: 'LIVE AI',      color: '#9B3FD4', sublabel: 'Live AI' },
+};
+
+function compactRow(level, tags) {
+  const L = LEVELS[level];
+  let h = '<div class="badge__crow">';
+  h += '<span class="badge__crow-pill" style="background:' + L.color + '">';
+  h += '<span class="badge__crow-pill-num">' + L.num + '</span>';
+  h += '<span class="badge__crow-pill-label">' + L.sublabel + '</span>';
+  h += '</span>';
+  if (tags.length > 0) {
+    h += '<div class="badge__crow-tags">';
+    tags.forEach(function(t) { h += '<span class="badge__crow-tag">' + t + '</span>'; });
+    h += '</div>';
+  }
+  h += '</div>';
+  return h;
+}
+
+function renderBadge(level, tags, subLevels, size) {
+  const L = LEVELS[level];
+  const cls = size === 'large' ? 'badge--large' : 'badge--compact';
+  const hasTags = tags.length > 0;
+  const hasSubs = subLevels.length > 0;
+
+  let html = '<div class="badge ' + cls + '">';
+
+  // === Full-size elements (hidden in compact via CSS) ===
+  html += '<div class="badge__band" style="background:' + L.color + '">';
+  html += '<span class="badge__gait">GAIT</span>';
+  html += '<span class="badge__subtitle">GAME AI TRANSPARENCY</span>';
+  html += '</div>';
+
+  const wideNum = level === 1.5 ? ' badge__body--wide-num' : '';
+  html += '<div class="badge__body' + wideNum + '">';
+  html += '<div class="badge__num">' + L.num + '</div>';
+  html += '<div class="badge__label-wrap"><div class="badge__label" style="color:' + L.color + '">' + L.label + '</div></div>';
+  html += '</div>';
+
+  if (hasTags) {
+    html += '<div class="badge__tags">';
+    tags.forEach(function(t) { html += '<span class="badge__tag">' + t + '</span>'; });
+    html += '</div>';
+  }
+
+  if (hasSubs) {
+    html += '<hr class="badge__sep">';
+    html += '<div class="badge__subs">';
+    subLevels.forEach(function(sub) {
+      const SL = LEVELS[sub.level];
+      html += '<div class="badge__sub">';
+      html += '<span class="badge__sub-pill" style="background:' + SL.color + '">';
+      html += '<span class="badge__sub-pill-num">' + SL.num + '</span>';
+      html += '<span class="badge__sub-pill-label">' + SL.sublabel + '</span>';
+      html += '</span>';
+      if (sub.tags.length > 0) {
+        html += '<div class="badge__sub-tags">';
+        sub.tags.forEach(function(t) { html += '<span class="badge__sub-tag">' + t + '</span>'; });
+        html += '</div>';
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+  }
+
+  // === Compact elements (hidden in large via CSS) ===
+  html += '<div class="badge__compact-header">GAIT</div>';
+  html += '<div class="badge__compact-rows">';
+  html += compactRow(level, tags);
+  subLevels.forEach(function(sub) { html += compactRow(sub.level, sub.tags); });
+  html += '</div>';
+
+  html += '</div>';
+  return html;
+}
+
+// Complex GAIT 4 badge config (used in hero, explainer, and store)
+var complexSubs = [
+  { level: 3, tags: ['3D','VOICE','LOC'] },
+  { level: 2, tags: ['ART'] },
+  { level: 1.5, tags: [] },
+];
+var complexTags = ['LIVE-DIALOGUE','LIVE-NARRATIVE'];
+
+// Hero badge — modest Level 2 with 1.5 sublevel
+document.getElementById('hero-badge').innerHTML = renderBadge(2, ['ART'], [
+  { level: 1.5, tags: [] },
+], 'large');
+
+// Explainer badge — complex Level 4
+document.getElementById('explainer-badge').innerHTML = renderBadge(4, complexTags, complexSubs, 'large');
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Framework Definition — GAIT: Game AI Transparency Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="gait-shared.css">
+<style>
+/* Framework page uses a narrower content container (not nav) */
+main .container { max-width: 860px; }
+footer .footer-inner { max-width: 860px; }
+
+/* ============ HEADER ============ */
+.page-header {
+  padding: 11rem 0 4rem;
+  position: relative;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -150px; right: -250px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.breadcrumb {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+}
+.breadcrumb a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.breadcrumb a:hover { opacity: 0.75; }
+.breadcrumb span { margin: 0 0.5rem; }
+.page-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+.page-header p {
+  color: var(--text-dim);
+  font-size: 1.1rem;
+  line-height: 1.7;
+  max-width: 600px;
+}
+.version-badge {
+  display: inline-block;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  background: var(--accent);
+  color: #fff;
+  padding: 0.2rem 0.65rem;
+  border-radius: 4px;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+/* ============ TOC ============ */
+.toc {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-card);
+  padding: 1.75rem 2rem;
+  margin-bottom: 4rem;
+}
+.toc-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+}
+.toc-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.4rem 2rem;
+}
+.toc-list a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.35rem 0;
+  transition: color 0.2s;
+}
+.toc-list a:hover { color: var(--accent); }
+.toc-list a::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--border-light);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+.toc-list a:hover::before { background: var(--accent); }
+
+/* ============ SECTIONS ============ */
+.fw-section {
+  margin-bottom: 4rem;
+  scroll-margin-top: 5rem;
+}
+.fw-section-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.6rem;
+}
+.fw-section-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ============ CONTENT ============ */
+.fw-content {
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  line-height: 1.75;
+}
+.fw-content p { margin-bottom: 1rem; }
+.fw-content p:last-child { margin-bottom: 0; }
+.fw-content strong { color: var(--text); font-weight: 600; }
+.fw-content em { font-style: italic; }
+.fw-content ul, .fw-content ol {
+  margin: 0.85rem 0;
+  padding-left: 1.5rem;
+}
+.fw-content li {
+  margin-bottom: 0.5rem;
+  line-height: 1.65;
+}
+.fw-content code {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.82rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  color: var(--accent);
+}
+.fw-content a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(124, 58, 237, 0.35);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.2s;
+}
+.fw-content a:hover { text-decoration-color: var(--accent); }
+
+.fw-content h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 2rem 0 0.75rem;
+}
+.fw-content h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 1.5rem 0 0.5rem;
+}
+
+/* Level reference badges */
+.level-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  vertical-align: baseline;
+}
+.lr-0 { color: var(--l0); background: rgba(22,163,74,0.08); }
+.lr-1 { color: var(--l1); background: rgba(37,99,235,0.08); }
+.lr-15 { color: var(--l15); background: rgba(99,102,241,0.08); }
+.lr-2 { color: var(--l2); background: rgba(217,119,6,0.08); }
+.lr-3 { color: var(--l3); background: rgba(234,88,12,0.08); }
+.lr-4 { color: var(--l4); background: rgba(220,38,38,0.08); }
+
+/* Level card */
+.level-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.75rem 2rem;
+  margin-bottom: 1.5rem;
+}
+.level-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.level-card-badge {
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+.level-card-badge .num { font-size: 1.3rem; line-height: 1; }
+.level-card-badge .sub { font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 1px; opacity: 0.7; }
+
+.level-card-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.level-card-headline {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+}
+
+/* Red line cards */
+.redline-card {
+  padding: 1.5rem 1.75rem;
+  border-left: 3px solid #ef4444;
+  background: rgba(239, 68, 68, 0.04);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 1.25rem;
+}
+.redline-card h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #dc2626;
+}
+
+/* Comparison table */
+.fw-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+.fw-table th {
+  background: var(--bg-elevated);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  padding: 0.65rem 0.85rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+}
+.fw-table td {
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  vertical-align: top;
+  line-height: 1.55;
+}
+.fw-table tr:last-child td { border-bottom: none; }
+.fw-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+
+/* Tag table */
+.tag-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+.tag-table th {
+  background: var(--bg-elevated);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+  padding: 0.55rem 0.85rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+}
+.tag-table td {
+  padding: 0.45rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  vertical-align: top;
+}
+.tag-table td:first-child {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.tag-table tr:last-child td { border-bottom: none; }
+
+/* Regulatory crosswalk table */
+.reg-table-wrap {
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.reg-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  min-width: 700px;
+}
+.reg-table th {
+  background: var(--bg-elevated);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  text-align: left;
+  padding: 0.6rem 0.6rem;
+  border-bottom: 2px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;
+}
+.reg-table td {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.reg-table tr:last-child td { border-bottom: none; }
+.reg-table td:first-child { font-weight: 600; color: var(--text); }
+.reg-table td:nth-child(2) { white-space: nowrap; }
+.reg-table .na { color: var(--text-muted); }
+
+/* Example box */
+.example-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  margin: 0.85rem 0;
+  font-size: 0.88rem;
+}
+.example-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* Footer extra spacing */
+footer { margin-top: 2rem; }
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .page-header { padding: 9.5rem 0 3rem; }
+  .toc-list { grid-template-columns: 1fr; }
+  .level-card-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+}
+
+/* ============ ANIMATIONS ============ */
+.page-header .breadcrumb,
+.page-header h1,
+.page-header > p {
+  opacity: 0;
+  animation: fadeUp 0.6s ease-out forwards;
+}
+.page-header h1 { animation-delay: 0.08s; }
+.page-header > p { animation-delay: 0.16s; }
+</style>
+</head>
+<body>
+
+<div class="preview-banner">
+  <strong>GAIT v1 now available for preview.</strong> Help define the future of AI in games by adopting GAIT and giving feedback.
+</div>
+
+<nav>
+  <div class="container">
+    <a href="gait-website.html" class="nav-logo">GAIT</a>
+    <div class="nav-links">
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-website.html#how-it-works">How It Works</a>
+      <a href="gait-framework.html" class="active">Framework</a>
+      <a href="gait-faq.html">FAQ</a>
+      <a href="gait-badge-generator.html">Badge Generator</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA" class="nav-cta">Register Your Game</a>
+    </div>
+  </div>
+</nav>
+
+<main>
+<!-- HEADER -->
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="gait-website.html">GAIT</a> <span>/</span> Framework Definition</div>
+    <h1>Framework Definition <span class="version-badge">v1.0</span></h1>
+    <p>The complete GAIT specification — every level, every tag, every red line, every regulatory mapping. This is the canonical reference document.</p>
+  </div>
+</section>
+
+<!-- TOC -->
+<div class="container">
+  <div class="toc">
+    <div class="toc-title">Sections</div>
+    <ul class="toc-list">
+      <li><a href="#purpose">Purpose</a></li>
+      <li><a href="#scope">Scope</a></li>
+      <li><a href="#accessibility">Accessibility Exemption</a></li>
+      <li><a href="#red-lines">Universal Red Lines</a></li>
+      <li><a href="#levels">The Levels</a></li>
+      <li><a href="#boundary">Level 2 vs Level 3</a></li>
+      <li><a href="#provenance">Training Data Provenance</a></li>
+      <li><a href="#composite">Composite Levels</a></li>
+      <li><a href="#display">Display Format</a></li>
+      <li><a href="#verification">Verification</a></li>
+      <li><a href="#governance">Governance</a></li>
+      <li><a href="#regulatory">Regulatory Crosswalk</a></li>
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+
+<!-- ====== 1. PURPOSE ====== -->
+<div class="fw-section" id="purpose">
+  <div class="fw-section-label">01</div>
+  <h2 class="fw-section-title">Purpose</h2>
+  <div class="fw-content">
+    <p>GAIT (Game AI Transparency) is a voluntary, multi-level disclosure framework for communicating how generative AI is used in video game products. It provides a shared vocabulary for studios, developers, players, platforms, and regulators.</p>
+    <p><strong>GAIT is neutral on AI adoption.</strong> It describes <em>how</em> AI is used, not <em>whether</em> it should be. Studios at every level — from fully human-crafted to extensively AI-powered — can participate.</p>
+  </div>
+</div>
+
+<!-- ====== 2. SCOPE ====== -->
+<div class="fw-section" id="scope">
+  <div class="fw-section-label">02</div>
+  <h2 class="fw-section-title">Scope</h2>
+  <div class="fw-content">
+    <h3>What GAIT covers</h3>
+    <p>GAIT applies to the <strong>shipped game product</strong>: the software and content that players download, install, and play. This includes all pre-generated assets and any live generative systems that operate at runtime.</p>
+
+    <h3>What GAIT does not cover</h3>
+    <ul>
+      <li><strong>Marketing and promotional materials</strong> (trailers, advertising, social media, key art, press materials). AI use in marketing is a distinct domain and does not affect a game's GAIT level.</li>
+      <li><strong>Traditional game AI:</strong> Pathfinding, behavior trees, finite state machines, utility AI, GOAP, and similar deterministic or heuristic systems.</li>
+      <li><strong>Procedural generation:</strong> Deterministic algorithmic content creation with set rules (e.g., Minecraft terrain generation, roguelike level layouts). These systems raise no training-data consent issues.</li>
+      <li><strong>ML-driven optimization systems:</strong> Matchmaking algorithms, dynamic pricing engines, recommendation systems, anti-cheat detection, and similar classification/prediction models that do not generate creative content.</li>
+      <li><strong>Upscaling and rendering technology:</strong> NVIDIA DLSS, AMD FSR, Intel XeSS, and similar frame generation or resolution upscaling techniques.</li>
+    </ul>
+
+    <h3>Definition of "AI"</h3>
+    <p>"AI" in this framework means <strong>generative AI</strong>: machine learning systems trained on data that produce non-deterministic outputs (text, images, audio, video, 3D assets) via models such as large language models, diffusion models, or generative adversarial networks.</p>
+    <p>A studio whose only AI use falls into the excluded categories listed above does not require GAIT disclosure and may optionally adopt Level 0.</p>
+  </div>
+</div>
+
+<!-- ====== 3. ACCESSIBILITY ====== -->
+<div class="fw-section" id="accessibility">
+  <div class="fw-section-label">03</div>
+  <h2 class="fw-section-title">Accessibility Exemption</h2>
+  <div class="fw-content">
+    <p>AI systems used <strong>exclusively</strong> to translate, transcribe, or modify game states for accessibility purposes do not trigger Level 3 or Level 4 designations, provided the core game content remains human-led. Exempt uses include:</p>
+    <ul>
+      <li>Real-time text-to-speech and speech-to-text</li>
+      <li>Dynamic visual filters or UI adaptation for colorblindness or low vision</li>
+      <li>AI-powered audio description of on-screen events</li>
+      <li>Adaptive difficulty or input remapping driven by accessibility needs</li>
+      <li>Real-time sign language avatar interpretation</li>
+    </ul>
+    <p>The exemption is narrow. It applies only to systems whose <strong>sole purpose</strong> is accessibility. A system serving both accessibility and general audiences (e.g., AI voice synthesis used for NPC dialogue <em>and</em> accessibility narration) is evaluated at the appropriate level for its general use. Studios claiming the exemption must document which AI systems qualify and confirm their exclusive accessibility purpose.</p>
+  </div>
+</div>
+
+<!-- ====== 4. RED LINES ====== -->
+<div class="fw-section" id="red-lines">
+  <div class="fw-section-label">04</div>
+  <h2 class="fw-section-title">Universal Red Lines</h2>
+  <div class="fw-content">
+    <p>These prohibitions apply at <strong>every level</strong>, including Level 0. They are non-negotiable conditions of GAIT participation. A studio that violates any red line forfeits its GAIT designation until the violation is remediated and independently verified.</p>
+
+    <div class="redline-card">
+      <h4>Red Line 1: No Unconsented Creative Replication</h4>
+      <p>No studio may use generative AI to replicate, imitate, or synthesize the creative output of any individual — including voice, likeness, motion capture performance, artistic style, or musical composition — without that individual's informed, documented consent.</p>
+      <p style="margin-top: 0.75rem;"><strong>Consent must be:</strong></p>
+      <ul>
+        <li>Given before the AI-generated content is created</li>
+        <li>Specific to the project and use case</li>
+        <li>Documented in writing</li>
+        <li>Compensated per applicable collective bargaining agreements or individual contracts</li>
+      </ul>
+    </div>
+
+    <div class="redline-card">
+      <h4>Red Line 2: No Concealment of Disclosed-Level AI Use</h4>
+      <p>A studio that has adopted a GAIT level must not actively conceal AI use that would place it at a higher level. Accidental inclusion of placeholder AI content triggers a mandatory correction process (update the level, patch or replace the content, issue a public acknowledgment) but does not itself constitute a red line violation. Deliberate concealment does.</p>
+      <p style="margin-top: 0.5rem;">A QA failure is correctable. A cover-up is disqualifying.</p>
+    </div>
+
+    <div class="redline-card">
+      <h4>Red Line 3: No AI-Generated Content Targeting Minors Without Safeguards</h4>
+      <p>Any game rated for audiences that include minors (ESRB E through T, PEGI 3 through 16, CERO A through C, or equivalent) that uses live generative AI features (Level 4) must implement content filtering, output monitoring, and human review mechanisms appropriate to the age rating.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ====== 5. THE LEVELS ====== -->
+<div class="fw-section" id="levels">
+  <div class="fw-section-label">05</div>
+  <h2 class="fw-section-title">The Levels</h2>
+  <div class="fw-content">
+    <p>GAIT defines six levels: <strong>0, 1, 1.5, 2, 3, and 4.</strong> The half-step at 1.5 addresses code's unique position — it ships to players but is not creative content players experience aesthetically.</p>
+
+    <!-- Level 0 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l0); color: var(--l0); background: rgba(22, 163, 74, 0.08);">
+          <span class="num">0</span>
+          <span class="sub">Free</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 0: AI-Free</div>
+          <div class="level-card-headline">No generative AI at any stage</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>No generative AI was used at any stage of development or production</strong> for this game, including internal tools, concept ideation, code generation, localization, or QA.</p>
+        <p>Everything in this game — art, music, writing, code, voice acting, translations — was created entirely by humans using non-generative tools.</p>
+        <h4>Documentation required</h4>
+        <ul>
+          <li>Written studio AI policy confirming prohibition for this product</li>
+          <li>Attestation by project lead</li>
+        </ul>
+        <p><strong>Note:</strong> Level 0 does not require that no employee has ever used generative AI in their personal lives, on other projects, or in general learning. It applies to the specific game product.</p>
+      </div>
+    </div>
+
+    <!-- Level 1 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l1); color: var(--l1); background: rgba(37, 99, 235, 0.08);">
+          <span class="num">1</span>
+          <span class="sub">Assisted</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 1: AI-Assisted Development</div>
+          <div class="level-card-headline">AI used in dev, nothing AI-generated ships</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>Generative AI was used as a development tool during production, but no AI-generated output reaches the player</strong> in the shipped product — neither creative content nor code. All player-facing assets and all shipped code are human-authored.</p>
+        <p>AI may have been used behind the scenes (brainstorming, prototyping, generating placeholder art later replaced, research), but everything in the final product is human-made.</p>
+
+        <h4>The Level 1 / Level 1.5 boundary for code</h4>
+        <ul>
+          <li><strong>Level 1:</strong> Generative AI is used in a <em>conversational, external</em> capacity for code-related tasks. A developer asks ChatGPT how to structure a function, pastes a snippet into a chat for debugging advice, or queries an AI tool for architectural guidance. The AI tool is not integrated into the project environment.</li>
+          <li><strong>Level 1.5:</strong> Any <em>integrated generative code tool</em> — whether IDE-based (GitHub Copilot, Cursor, Amazon CodeWhisperer, Tabnine, Codeium) or agentic/CLI-based (Claude Code, Windsurf, Aider, Devin) — is present in the development environment and directly outputs code into the project.</li>
+        </ul>
+        <p>This boundary is binary: is a generative code tool part of the project's development toolchain? If yes → Level 1.5. If AI is used only through external conversational interfaces → Level 1.</p>
+
+        <h4>Documentation required</h4>
+        <ul>
+          <li>Written description of AI tools used and for what purposes</li>
+          <li>Confirmation that no integrated generative code tools are part of the development toolchain</li>
+          <li>Process documentation showing how AI-generated content is excluded from the final build</li>
+          <li>Attestation by project lead</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Level 1.5 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l15); color: var(--l15); background: rgba(99, 102, 241, 0.08);">
+          <span class="num">1.5</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 1.5: AI-Generated Code</div>
+          <div class="level-card-headline">AI code tools in the toolchain, AI code ships</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>Generative AI code tools — whether IDE-integrated (GitHub Copilot, Cursor, Codeium) or agentic/CLI-based (Claude Code, Windsurf, Aider, Devin) — are part of the development toolchain, and AI-generated code ships in the final product.</strong> However, no AI-generated creative content reaches the player. All art, audio, text, voice, music, localization, and other experiential content is human-authored.</p>
+        <p>Code occupies a unique position: it ships to the player and runs on their machine, but it is not creative content players experience aesthetically. A player cannot perceive whether a rendering function or save system was written by a human or generated by Copilot or Claude Code.</p>
+
+        <h4>Documentation required</h4>
+        <ul>
+          <li>Identification of all generative AI code tools in the development toolchain (IDE-integrated and agentic/CLI-based)</li>
+          <li>Attestation by project lead and engineering lead confirming no AI-generated creative content in shipped product</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Level 2 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l2); color: var(--l2); background: rgba(217, 119, 6, 0.08);">
+          <span class="num">2</span>
+          <span class="sub">Aug</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 2: AI-Augmented Creative Pipelines</div>
+          <div class="level-card-headline">Human-led creative pipelines with AI tools integrated</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>Generative AI tools are integrated into human-driven creative pipelines that produce player-facing content.</strong> The creative pipeline is led by human professionals who make the core aesthetic, narrative, and design decisions. AI tools serve as instruments within that pipeline — accelerants, not replacements.</p>
+        <p>Level 2 is defined at the <strong>pipeline level</strong>, not the individual asset level. The question is: <em>is this creative pipeline fundamentally human-driven, with AI tools integrated into it?</em></p>
+
+        <h4>Indicators of a Level 2 pipeline</h4>
+        <ul>
+          <li>Human creative professionals with domain expertise are staffed and make core creative decisions</li>
+          <li>AI tools are one component in a multi-step workflow, not the entire workflow</li>
+          <li>The pipeline could exist without the AI tools; they accelerate rather than constitute the process</li>
+          <li>Creative direction, quality judgment, and final approval rest with humans</li>
+        </ul>
+
+        <h4>Examples</h4>
+        <ul>
+          <li>AI LOD tool integrated into a human-built environment art pipeline</li>
+          <li>AI-assisted texture upscaling refined by technical artists</li>
+          <li>AI-powered rigging or animation cleanup tools used by animators</li>
+          <li>Generative fill used as one step in a concept artist's process</li>
+          <li>AI-assisted localization with human translator review and finalization</li>
+          <li>AI draft generation used by writers as a starting point for substantial rewriting</li>
+        </ul>
+
+        <h4>Content category tags</h4>
+        <p>One or more must be specified:</p>
+        <table class="tag-table">
+          <thead><tr><th>Tag</th><th>Covers</th></tr></thead>
+          <tbody>
+            <tr><td>ART</td><td>Visual art, textures, concept art, UI elements, icons</td></tr>
+            <tr><td>AUDIO</td><td>Music, sound effects, ambient audio</td></tr>
+            <tr><td>VOICE</td><td>Voice acting, spoken dialogue, narration</td></tr>
+            <tr><td>TEXT</td><td>Narrative text, dialogue, lore, item descriptions, tutorials</td></tr>
+            <tr><td>LOC</td><td>Translations, localized text or audio</td></tr>
+            <tr><td>VIDEO</td><td>Cinematics, cutscenes, FMV content</td></tr>
+            <tr><td>3D</td><td>3D models, animations, environments, character models</td></tr>
+          </tbody>
+        </table>
+        <p>A designation reading <code>GAIT 2: ART, LOC</code> tells players that art and translations involve AI-augmented human-led pipelines, while other categories remain fully human-authored.</p>
+
+        <h4>Documentation required</h4>
+        <ul>
+          <li>Inventory of creative pipelines where AI tools are integrated, with content category tags</li>
+          <li>Description of AI tools and their role within each pipeline</li>
+          <li>Team structure documentation showing human creative professionals staffed on AI-augmented pipelines</li>
+          <li>Attestation by project lead and relevant department leads</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Level 3 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l3); color: var(--l3); background: rgba(234, 88, 12, 0.08);">
+          <span class="num">3</span>
+          <span class="sub">Gen</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 3: AI-Generated Shipped Content</div>
+          <div class="level-card-headline">AI is the creative pipeline for specified content</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>Generative AI is the creative pipeline for one or more categories of player-facing content.</strong> The AI system is the primary content generator; human involvement is concentrated on prompting, selecting, curating, light editing, quality control, and integration. For the specified categories, humans are gatekeepers rather than authors.</p>
+        <p>A game may be Level 3 for some content categories and Level 2 or lower for others.</p>
+
+        <h4>Content category tags</h4>
+        <p>One or more must be specified (same tags as Level 2):</p>
+        <table class="tag-table">
+          <thead><tr><th>Tag</th><th>Covers</th></tr></thead>
+          <tbody>
+            <tr><td>ART</td><td>Visual art, textures, concept art, UI elements, icons</td></tr>
+            <tr><td>AUDIO</td><td>Music, sound effects, ambient audio</td></tr>
+            <tr><td>VOICE</td><td>Voice acting, spoken dialogue, narration</td></tr>
+            <tr><td>TEXT</td><td>Narrative text, dialogue, lore, item descriptions, tutorials</td></tr>
+            <tr><td>LOC</td><td>Translations, localized text or audio</td></tr>
+            <tr><td>VIDEO</td><td>Cinematics, cutscenes, FMV content</td></tr>
+            <tr><td>3D</td><td>3D models, animations, environments, character models</td></tr>
+          </tbody>
+        </table>
+
+        <p>A designation reading <code>GAIT 3: ART, LOC</code> tells players that art and translations were primarily AI-generated while other categories remain human-led.</p>
+        <p>Code is not a Level 3 tag. AI-generated code is addressed at Level 1.5 regardless of scope.</p>
+        <p><strong>For VOICE tag:</strong> Performer consent documentation per Red Line 1 is required.</p>
+        <p><strong>For studio-owned or studio-trained AI models:</strong> Training data provenance documentation is required (see <a href="#provenance">Section 7</a>).</p>
+
+        <h4>Documentation required</h4>
+        <ul>
+          <li>All Level 2 documentation, plus:</li>
+          <li>Specific content category tags with descriptions</li>
+          <li>Volume estimate (e.g., "approximately 40% of environmental textures")</li>
+          <li>Identification of AI models/services used</li>
+          <li>Training data provenance for studio-owned models</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Level 4 -->
+    <div class="level-card">
+      <div class="level-card-header">
+        <div class="level-card-badge" style="border-color: var(--l4); color: var(--l4); background: rgba(220, 38, 38, 0.08);">
+          <span class="num">4</span>
+          <span class="sub">Live</span>
+        </div>
+        <div>
+          <div class="level-card-title">Level 4: Live Generative AI</div>
+          <div class="level-card-headline">Real-time generative AI during gameplay</div>
+        </div>
+      </div>
+      <div class="fw-content">
+        <p><strong>The game includes AI systems that generate content in real time during gameplay</strong>, producing non-deterministic outputs experienced directly by the player. This includes LLM-powered NPC dialogue, real-time AI-generated quests or narratives, runtime image/texture generation, AI-generated music beyond pre-composed variations, or any system where the player experiences content generated by a generative AI model during play.</p>
+
+        <h4>Live content category tags</h4>
+        <p>One or more must be specified:</p>
+        <table class="tag-table">
+          <thead><tr><th>Tag</th><th>Covers</th></tr></thead>
+          <tbody>
+            <tr><td>LIVE-DIALOGUE</td><td>AI-generated NPC conversation, reactive dialogue</td></tr>
+            <tr><td>LIVE-NARRATIVE</td><td>AI-generated quests, storylines, scenarios, events</td></tr>
+            <tr><td>LIVE-ART</td><td>Runtime-generated textures, images, environments</td></tr>
+            <tr><td>LIVE-AUDIO</td><td>Generative music, adaptive soundscapes beyond pre-composed stems</td></tr>
+            <tr><td>LIVE-VOICE</td><td>Real-time AI voice synthesis</td></tr>
+            <tr><td>LIVE-WORLD</td><td>AI-generated world content, environments, creatures (generative, not procedural)</td></tr>
+          </tbody>
+        </table>
+
+        <p>A game where generative AI is the explicit creative premise (e.g., AI Roguelite, Death by AI) carries Level 4 with full tag disclosure — which in those cases is a feature, not a warning.</p>
+        <p><strong>For LIVE-VOICE:</strong> Performer consent documentation per Red Line 1 is required.</p>
+        <p><strong>For LIVE-DIALOGUE:</strong> An in-game disclosure mechanism must inform players they are interacting with AI (may be contextually obvious in AI-themed games but must be explicit where it is not).</p>
+        <p><strong>For games rated for minors:</strong> Red Line 3 safeguard documentation is required.</p>
+
+        <h4>Documentation required</h4>
+        <ul>
+          <li>All applicable lower-level documentation, plus:</li>
+          <li>Technical description of each live AI system</li>
+          <li>Content safety and moderation measures</li>
+          <li>Data handling disclosure (what player data the AI system collects or uses)</li>
+          <li>Training data provenance for studio-owned models</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ====== 6. LEVEL 2 vs 3 ====== -->
+<div class="fw-section" id="boundary">
+  <div class="fw-section-label">06</div>
+  <h2 class="fw-section-title">Distinguishing Level 2 from Level 3</h2>
+  <div class="fw-content">
+    <p>The distinction is <strong>architectural, not quantitative.</strong> The question is whether humans drive the creative pipeline with AI as a tool (Level 2), or whether AI <em>is</em> the creative pipeline with humans as curators (Level 3).</p>
+
+    <table class="fw-table">
+      <thead>
+        <tr><th></th><th>Level 2</th><th>Level 3</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Who drives the pipeline?</td><td>Human creative professionals</td><td>The AI system</td></tr>
+        <tr><td>Role of AI</td><td>Tool within a human-directed workflow</td><td>Primary content generator</td></tr>
+        <tr><td>Role of humans</td><td>Authors using AI-augmented tools</td><td>Curators, prompters, selectors, QC</td></tr>
+        <tr><td>Could it work without AI?</td><td>Yes, with different/slower tools</td><td>Not without fundamental restructuring</td></tr>
+        <tr><td>What does an auditor examine?</td><td>Workflow architecture, team structure</td><td>Whether content categories have human-led or AI-led pipelines</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Solo Developers and Micro-Studios</h3>
+    <p>For teams of 1–3 people without differentiated departments, the Level 2/3 distinction uses a <strong>primary authorship test:</strong></p>
+    <ul>
+      <li><strong>Level 2:</strong> The human creator is the primary author of the base asset — sketching the original layout, writing the original draft, composing the original melody — with AI used for refinement, upscaling, or augmentation.</li>
+      <li><strong>Level 3:</strong> The AI generates the foundational asset from a prompt and the human's role is selection, curation, and polish.</li>
+    </ul>
+    <p>At studio scale: <em>who drives the pipeline?</em> At solo-developer scale: <em>who authored the base asset?</em></p>
+
+    <h3>Boundary Examples</h3>
+    <ul>
+      <li>Concept artist generates Midjourney references, paints final art by hand → <strong>Level 1 or 2</strong> (human authored the shipped asset)</li>
+      <li>Studio uses AI texture generator in a pipeline staffed by technical artists who direct and approve → <strong>Level 2</strong> (human-led pipeline)</li>
+      <li>Studio prompts diffusion model for character portraits, ships with color correction → <span class="level-ref lr-3">Level 3: ART</span> (AI generated the foundational asset)</li>
+      <li>Solo dev writes all dialogue, uses AI for localization with personal review → <strong>Level 2</strong> if dev speaks target language; closer to <span class="level-ref lr-3">Level 3: LOC</span> if not</li>
+      <li>Two-person team: one composes music with AI orchestration, the other prompts an image generator for all visuals → <strong>Level 2 for audio, <span class="level-ref lr-3">Level 3: ART</span> for visuals</strong></li>
+    </ul>
+  </div>
+</div>
+
+<!-- ====== 7. TRAINING DATA ====== -->
+<div class="fw-section" id="provenance">
+  <div class="fw-section-label">07</div>
+  <h2 class="fw-section-title">Training Data Provenance</h2>
+  <div class="fw-content">
+    <p>Training data provenance requirements apply <strong>only to AI models that the studio owns, has trained, has fine-tuned, or has commissioned for exclusive use.</strong> Third-party generative AI services (OpenAI, Stability AI, Midjourney, etc.) are governed by their own providers and regulated separately.</p>
+    <p>Studios using off-the-shelf third-party AI tools are not required to document those providers' training data under GAIT. A game studio using Midjourney cannot meaningfully audit Midjourney's training corpus — that responsibility lies with model providers and the regulatory frameworks governing them.</p>
+
+    <h4>Where provenance documentation is required (Levels 3 and 4, for studio-owned models)</h4>
+    <ul>
+      <li>Identification of training data sources (proprietary assets, licensed datasets, public domain, etc.)</li>
+      <li>Confirmation that training data use complies with applicable copyright and licensing terms</li>
+      <li>For models trained on work by identifiable individuals: documentation that consent or licensing requirements were met</li>
+      <li>Description of data curation or filtering applied</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ====== 8. COMPOSITE LEVELS ====== -->
+<div class="fw-section" id="composite">
+  <div class="fw-section-label">08</div>
+  <h2 class="fw-section-title">Composite Levels</h2>
+  <div class="fw-content">
+    <p>A game may have different AI use levels across content categories. The framework uses the <strong>highest applicable level</strong> as the headline designation, with tags and sub-levels providing granularity.</p>
+
+    <div class="example-box">
+      <div class="example-label">Example designations</div>
+      <table class="tag-table">
+        <thead><tr><th>Scenario</th><th>GAIT Designation</th></tr></thead>
+        <tbody>
+          <tr><td style="font-family: var(--font-body); color: var(--text-dim); white-space: normal;">AI code assistants + human-led art pipeline with AI tools + AI-generated item text</td><td><code>GAIT 3: TEXT</code> · Code: 1.5 · 2: ART</td></tr>
+          <tr><td style="font-family: var(--font-body); color: var(--text-dim); white-space: normal;">AI-assisted concept art + LLM-powered NPC dialogue</td><td><code>GAIT 4: LIVE-DIALOGUE</code> · 2: ART</td></tr>
+          <tr><td style="font-family: var(--font-body); color: var(--text-dim); white-space: normal;">Copilot for engineering, all creative content human-made</td><td><code>GAIT 1.5</code></td></tr>
+          <tr><td style="font-family: var(--font-body); color: var(--text-dim); white-space: normal;">No AI used anywhere</td><td><code>GAIT 0</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>DLC, Updates, and Live Service Content</h3>
+    <p>The GAIT level applies to the product as shipped. If post-launch content changes the AI use profile, the designation must be updated from the date of that content update.</p>
+
+    <h3>Middleware and Engine-Level AI</h3>
+    <p>If an engine or middleware component uses generative AI in a way that affects player-facing content, the resulting content is evaluated under the same criteria as studio-produced content. Studios cannot evade disclosure by attributing AI generation to a third-party tool.</p>
+
+    <h3>User-Generated Content</h3>
+    <p>If a game provides AI-powered creation tools to players, the game carries at minimum a Level 4 designation for the live AI system it provides, with appropriate tags.</p>
+  </div>
+</div>
+
+<!-- ====== 9. DISPLAY FORMAT ====== -->
+<div class="fw-section" id="display">
+  <div class="fw-section-label">09</div>
+  <h2 class="fw-section-title">Display Format</h2>
+  <div class="fw-content">
+    <p><strong>Format:</strong> <code>GAIT [Level]: [Tags]</code></p>
+
+    <div class="example-box">
+      <div class="example-label">Examples</div>
+      <p><code>GAIT 0</code> — AI-Free</p>
+      <p><code>GAIT 1</code> — AI-Assisted Development</p>
+      <p><code>GAIT 1.5</code> — AI-Generated Code</p>
+      <p><code>GAIT 2: ART, LOC</code> — AI-Augmented Art and Localization Pipelines</p>
+      <p><code>GAIT 3: ART, LOC</code> — AI-Generated Art and Localization</p>
+      <p><code>GAIT 4: LIVE-DIALOGUE | 3: ART</code> — Live AI Dialogue, AI-Generated Art</p>
+    </div>
+
+    <h4>Recommended placement</h4>
+    <ul>
+      <li>Digital storefront pages</li>
+      <li>Physical packaging (where applicable)</li>
+      <li>In-game settings or info menu (non-intrusive placement)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ====== 10. VERIFICATION ====== -->
+<div class="fw-section" id="verification">
+  <div class="fw-section-label">10</div>
+  <h2 class="fw-section-title">Verification</h2>
+  <div class="fw-content">
+    <p>GAIT currently operates on <strong>self-attestation.</strong> Studios complete the GAIT Self-Assessment Questionnaire, declare their level, and maintain the documentation required for that level. This is the sole verification mechanism at launch.</p>
+    <p>Self-attestation is a practical starting point: it allows adoption without gatekeepers, fees, or infrastructure that doesn't yet exist. It is also similar to how existing platform disclosure systems (e.g., Steam's AI content survey) operate.</p>
+    <p>If GAIT gains meaningful adoption, stronger verification mechanisms could be developed — including peer review by participating studios and independent third-party audits. A future "GAIT Verified" designation backed by independent audit would carry more weight than self-declaration alone. These structures will be built if and when there is demand for them.</p>
+  </div>
+</div>
+
+<!-- ====== 11. GOVERNANCE ====== -->
+<div class="fw-section" id="governance">
+  <div class="fw-section-label">11</div>
+  <h2 class="fw-section-title">Governance</h2>
+  <div class="fw-content">
+    <p>GAIT is currently maintained by its creator as an individual proposal. There is no governance board, formal revision process, or institutional structure at this time.</p>
+    <p>If GAIT gains adoption, governance structures would need to follow — including transparent revision processes, public comment periods, and representation from studios, developers (including union representatives), players, and regulatory/academic advisors. Those are structures you build when there is something to govern.</p>
+  </div>
+</div>
+
+<!-- ====== 12. REGULATORY CROSSWALK ====== -->
+<div class="fw-section" id="regulatory">
+  <div class="fw-section-label">12</div>
+  <h2 class="fw-section-title">Regulatory Compliance Crosswalk</h2>
+  <div class="fw-content">
+    <div class="reg-table-wrap">
+      <table class="reg-table">
+        <thead>
+          <tr>
+            <th>Regulation</th>
+            <th>Effective</th>
+            <th>L0</th>
+            <th>L1</th>
+            <th>L1.5</th>
+            <th>L2</th>
+            <th>L3</th>
+            <th>L4</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>EU AI Act Art. 50</td>
+            <td>Aug 2026</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>Non-intrusive disclosure</td>
+            <td>Machine-readable marking; visible disclosure</td>
+            <td>Full chatbot/deepfake disclosure</td>
+          </tr>
+          <tr>
+            <td>South Korea AI Framework</td>
+            <td>Jan 2026</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>User notification likely</td>
+            <td>Notification mandatory; risk assessment</td>
+            <td>Enhanced risk assessment</td>
+          </tr>
+          <tr>
+            <td>China AI Labeling</td>
+            <td>Sep 2025</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>Explicit + implicit labels</td>
+            <td>Full labeling regime</td>
+            <td>Full labeling + human-like AI rules</td>
+          </tr>
+          <tr>
+            <td>Steam</td>
+            <td>Current</td>
+            <td>Optional</td>
+            <td>Not required</td>
+            <td>Not required</td>
+            <td>Pre-Generated disclosure</td>
+            <td>Pre-Generated with specifics</td>
+            <td>Pre-Generated + Live-Generated</td>
+          </tr>
+          <tr>
+            <td>US FTC</td>
+            <td>Current</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>If provenance misrepresented</td>
+            <td>Provenance applies</td>
+            <td>All L3 + companion AI inquiry</td>
+          </tr>
+          <tr>
+            <td>California SB 942</td>
+            <td>Aug 2026</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>Exempt (video games)</td>
+            <td>Exempt (video games)</td>
+            <td>UGC AI tools may trigger</td>
+          </tr>
+          <tr>
+            <td>Microsoft XR-018</td>
+            <td>Current</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>Recommended</td>
+            <td>Mandatory; in-app reporting</td>
+          </tr>
+          <tr>
+            <td>Tennessee ELVIS Act</td>
+            <td>Jul 2024</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td class="na">—</td>
+            <td>If performer voice/likeness</td>
+            <td>Applies (VOICE)</td>
+            <td>Applies (LIVE-VOICE)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem; font-style: italic;">"—" indicates no specific obligation at this level under this regulation.</p>
+  </div>
+</div>
+
+<!-- ====== LICENSING ====== -->
+<div class="fw-section" id="licensing">
+  <div class="fw-section-label"></div>
+  <h2 class="fw-section-title">Licensing</h2>
+  <div class="fw-content">
+    <p>The GAIT designation, level names, and associated visual marks are available for use by any studio that completes the GAIT Self-Assessment Questionnaire, maintains the required documentation for their declared level, and complies with the Universal Red Lines. There is no fee for participation.</p>
+    <p style="margin-top: 1.5rem; font-style: italic; color: var(--text-muted);">GAIT is an open framework proposed by James Jennings, a game developer and AI expert. For the latest version, updates, and registration, visit <a href="gait-website.html">gaitframework.org</a>.</p>
+  </div>
+</div>
+
+</div><!-- /container -->
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">GAIT</div>
+    <div class="footer-links">
+      <a href="gait-website.html">Home</a>
+      <a href="gait-website.html#levels">Levels</a>
+      <a href="gait-framework.html">Full Definition</a>
+      <a href="https://forms.gle/eFnByzmrnyPEuLEbA">Register</a>
+    </div>
+  </div>
+  <div class="footer-copy">
+    GAIT: Game AI Transparency Framework · v1.0 · February 2026<br>
+    Open framework · Free to adopt · No membership required
+  </div>
+  <div class="footer-disclaimer">
+    GAIT is an informational framework only. Nothing herein constitutes legal advice. Adopting a GAIT level does not guarantee compliance with any government regulation or platform policy. Consult qualified legal counsel for jurisdiction-specific obligations.
+  </div>
+</footer>
+
+</body>
+</html>
