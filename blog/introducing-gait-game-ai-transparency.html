@@ -17,6 +17,34 @@
     gtag('js', new Date());
     gtag('config', 'G-SHYSENGR1Z');
   </script>
+  <style>
+    sup a {
+      text-decoration: none;
+      color: var(--accent, #6c63ff);
+      font-weight: 600;
+      padding: 0 1px;
+    }
+    sup a:hover {
+      text-decoration: underline;
+    }
+    .references {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border, #e2e8f0);
+      font-size: 0.85em;
+    }
+    .references h2 {
+      font-size: 1.1em;
+      margin-bottom: 0.75rem;
+    }
+    .references ol {
+      padding-left: 1.5rem;
+      line-height: 1.7;
+    }
+    .references li {
+      word-break: break-word;
+    }
+  </style>
 </head>
 <body>
   <header class="header">
@@ -33,7 +61,7 @@
       <article>
         <h1>Introducing the Game AI Transparency Framework</h1>
 
-        <p>90% of studios are using AI. 85% of players say they hate it. Developers fear for their jobs. Only Steam tries to require disclosure, and they only cover what players see, not what's behind the scenes. The EU AI Act's transparency requirements hit in August. South Korea's AI Framework Act is already live. The window for the industry to self-regulate is closing fast.</p>
+        <p>90% of studios are using AI<sup><a href="#ref-1" id="cite-1">[1]</a></sup>. 85% of players say they hate it<sup><a href="#ref-2" id="cite-2">[2]</a></sup>. Developers fear for their jobs<sup><a href="#ref-3" id="cite-3">[3]</a></sup>. Only Steam tries to require disclosure, and they only cover what players see, not what's behind the scenes<sup><a href="#ref-4" id="cite-4">[4]</a></sup>. The EU AI Act's transparency requirements hit in August<sup><a href="#ref-5" id="cite-5">[5]</a></sup>. South Korea's AI Framework Act is already live<sup><a href="#ref-6" id="cite-6">[6]</a></sup>. The window for the industry to self-regulate is closing fast.</p>
 
         <p>I am a game developer, experienced AI/ML practitioner, and avid player. I'm introducing how I would solve this problem: the <a href="https://hypervisor.studio/gait/">Game AI Transparency (GAIT) framework</a>.</p>
 
@@ -51,7 +79,7 @@
 
         <p>The independent beer response to this was the Independent Craft Brewer seal, created by the Brewer's Association. The BA created a set of criteria to define an "independent brewer" (based on ownership structure and production volume), and licensed this seal to those brewers, who could use it on their beer packaging and in their breweries. It was a signal to the relevant constituents (brewery owners, staff, and buyers) of the authenticity of the independent, local, and craft nature of what's being sold.</p>
 
-        <p>This reminds me a lot of what is going on right now - a crisis of authenticity, not of ownership but of development. Ultimately, the craft beer label didn't impact sales on the macro level. 72% of drinkers said it was important, but sales data showed virtually no difference. But what it did achieve was give a shared vocabulary to an industry dealing with an identity crisis.</p>
+        <p>This reminds me a lot of what is going on right now - a crisis of authenticity, not of ownership but of development. Ultimately, the craft beer label didn't impact sales on the macro level. 72% of drinkers said it was important, but sales data showed virtually no difference<sup><a href="#ref-7" id="cite-7">[7]</a></sup>. But what it did achieve was give a shared vocabulary to an industry dealing with an identity crisis.</p>
 
         <h3>Mortal Kombat and the ESRB</h3>
 
@@ -59,17 +87,17 @@
 
         <p>When I was 9 years old, I wrote a letter to Nintendo of America, asking them politely to consider allowing Mortal Kombat II to feature blood when it was released for the SNES. Mortal Kombat was becoming famous then for its over-the-top violence and gore; Nintendo had decided to mandate the game take out its most violent content, and change the blood to "sweat" using a palette swap.</p>
 
-        <p>In the response from Nintendo, the customer service representative alluded to working being done by Nintendo and its industry peers, in response to inquiries from the US Congress, to establish a rating system for video games. This would become the ESRB. The backdrop to this was a series of hearings in Congress into violence in video games, with Mortal Kombat and the FMV game Night Trap being used as representative examples of the level of explicit violence children who played video games were being exposed to.</p>
+        <p>In the response from Nintendo, the customer service representative alluded to working being done by Nintendo and its industry peers, in response to inquiries from the US Congress, to establish a rating system for video games. This would become the ESRB. The backdrop to this was a series of hearings in Congress into violence in video games<sup><a href="#ref-8" id="cite-8">[8]</a></sup>, with Mortal Kombat and the FMV game Night Trap being used as representative examples of the level of explicit violence children who played video games were being exposed to.</p>
 
         <p>The threat presented to game makers was legislative regulation; self-regulating via the ESRB headed off that threat. While there's no governmental mandate that games be labeled with ESRB ratings in the US, they are required de facto in that major game platforms and resellers require ESRB ratings in order for games to be sold.</p>
 
-        <p>While it could come to pass that the US Congress could step in and do something again with AI in games, the reality of politics in 2026, relative to 1994, is that Congress is seen by the public as dysfunctional and incompetent. So that feels unlikely to happen. But the regulatory pressure isn't going to come from Congress, it's already coming from the EU and from South Korea, with deadlines months away, not years.</p>
+        <p>While it could come to pass that the US Congress could step in and do something again with AI in games, the reality of politics in 2026, relative to 1994, is that Congress is seen by the public as dysfunctional and incompetent. So that feels unlikely to happen. But the regulatory pressure isn't going to come from Congress, it's already coming from the EU<sup><a href="#ref-9" id="cite-9">[9]</a></sup> and from South Korea<sup><a href="#ref-10" id="cite-10">[10]</a></sup>, with deadlines months away, not years.</p>
 
         <h2>What is GAIT</h2>
 
-        <p>Structured AI disclosure in games is effectively non-existent as of now. Steam requires disclosure of AI content, but this is an open text field based on an honor system. No other major marketplace has disclosure requirements. Mobile games have zero disclosure requirements on any storefront.</p>
+        <p>Structured AI disclosure in games is effectively non-existent as of now. Steam requires disclosure of AI content<sup><a href="#ref-11" id="cite-11">[11]</a></sup>, but this is an open text field based on an honor system. No other major marketplace has disclosure requirements<sup><a href="#ref-12" id="cite-12">[12]</a></sup>. Mobile games have zero disclosure requirements on any storefront<sup><a href="#ref-13" id="cite-13">[13]</a></sup>.</p>
 
-        <p>In the last year alone, four major studios were caught shipping AI-generated content - Ubisoft, 11 Bit Studios, Sandfall Interactive, Frontier Developments. They all used the same excuse of "a placeholder accidentally shipped". When so many studios are doing the same thing accidentally, it's not a problem of carelessness. It's the absence of any structured system for tracking and discussing AI use.</p>
+        <p>In the last year alone, four major studios were caught shipping AI-generated content - Ubisoft<sup><a href="#ref-14" id="cite-14">[14]</a></sup>, 11 Bit Studios<sup><a href="#ref-15" id="cite-15">[15]</a></sup>, Sandfall Interactive<sup><a href="#ref-16" id="cite-16">[16]</a></sup>, Frontier Developments<sup><a href="#ref-17" id="cite-17">[17]</a></sup>. They all used the same excuse of "a placeholder accidentally shipped". When so many studios are doing the same thing accidentally, it's not a problem of carelessness. It's the absence of any structured system for tracking and discussing AI use.</p>
 
         <p>My hope is that by introducing a framework and driving adoption, AI disclosure can become a standard practice, even if storefronts are reluctant to embrace them directly.</p>
 
@@ -85,7 +113,7 @@
 
         <p>One intention of GAIT is to require participating studios to maintain documentation of AI in their development process and pipelines. My read on the "accidentally shipping AI placeholder" problem is that these are genuinely accidental incidents, but it demonstrates the gap: documentation rigor is still behind as AI rapidly matures.</p>
 
-        <p>There is an explicit carve out for accessibility use cases in GAIT, which is important given the 429 million players with disabilities in the world. One interesting area of innovation is AI-assisted accessibility features, and the exemption is intended to prevent an accidental chill on accessibility feature development.</p>
+        <p>There is an explicit carve out for accessibility use cases in GAIT, which is important given the 429 million players with disabilities<sup><a href="#ref-18" id="cite-18">[18]</a></sup> in the world. One interesting area of innovation is AI-assisted accessibility features, and the exemption is intended to prevent an accidental chill on accessibility feature development.</p>
 
         <h2>Call to action</h2>
 
@@ -104,6 +132,30 @@
         <p><em>written by my hand. AI was used for reviewing and copyediting, but did not directly edit this text. AI was used to convert my markdown to HTML. So, I guess GAIT 1.5?</em></p>
 
         <p><em>p.s. I publish a daily TLDR-style game industry newsletter at <a href="https://readgg.com">readgg.com</a></em></p>
+
+        <section class="references">
+          <h2>References</h2>
+          <ol>
+            <li id="ref-1"><a href="https://www.googlecloudpresscorner.com/2025-08-18-90-of-Games-Developers-Already-Using-AI-in-Workflows,-According-to-New-Google-Cloud-Research">Google Cloud: 90% of Games Developers Already Using AI in Workflows</a></li>
+            <li id="ref-2"><a href="https://quanticfoundry.com/2025/12/18/gen-ai/">Quantic Foundry: Player Sentiment on Generative AI</a></li>
+            <li id="ref-3"><a href="https://www.gamedeveloper.com/business/one-third-of-game-workers-use-generative-ai-but-half-think-it-s-bad-for-the-industry">Game Developer: One-Third of Game Workers Use Generative AI but Half Think It's Bad for the Industry</a></li>
+            <li id="ref-4"><a href="https://www.pcgamer.com/software/ai/steam-updates-ai-disclosure-form-to-specify-that-its-focused-on-ai-generated-content-that-is-consumed-by-players-not-efficiency-tools-used-behind-the-scenes/">PC Gamer: Steam Updates AI Disclosure Form</a></li>
+            <li id="ref-5"><a href="https://artificialintelligenceact.eu/article/50/">EU AI Act, Article 50: Transparency Obligations</a></li>
+            <li id="ref-6"><a href="https://www.loc.gov/item/global-legal-monitor/2026-02-20/south-korea-comprehensive-ai-legal-framework-takes-effect/">Library of Congress: South Korea's Comprehensive AI Legal Framework Takes Effect</a></li>
+            <li id="ref-7"><a href="https://www.brewersassociation.org/insights/independent-craft-brewer-seal-steadily-gaining-awareness/">Brewers Association: Independent Craft Brewer Seal Steadily Gaining Awareness</a></li>
+            <li id="ref-8"><a href="https://en.wikipedia.org/wiki/1993%E2%80%9394_United_States_Senate_hearings_on_video_games">Wikipedia: 1993-94 United States Senate Hearings on Video Games</a></li>
+            <li id="ref-9"><a href="https://www.ailawandpolicy.com/2025/02/some-implications-of-the-eu-ai-act-on-video-game-developers/">AI Law and Policy: Implications of the EU AI Act on Video Game Developers</a></li>
+            <li id="ref-10"><a href="https://fpf.org/blog/south-koreas-new-ai-framework-act-a-balancing-act-between-innovation-and-regulation/">Future of Privacy Forum: South Korea's New AI Framework Act</a></li>
+            <li id="ref-11"><a href="https://www.aiandgames.com/p/a-failure-of-platform-policy-the">AI and Games: A Failure of Platform Policy</a></li>
+            <li id="ref-12"><a href="https://www.gamespot.com/articles/ai-disclosures-make-no-sense-for-game-stores-tim-sweeney-says/1100-6536526/">GameSpot: AI Disclosures Make No Sense for Game Stores, Tim Sweeney Says</a></li>
+            <li id="ref-13"><a href="https://techcrunch.com/2025/11/13/apples-new-app-review-guidelines-clamp-down-on-apps-sharing-personal-data-with-third-party-ai/">TechCrunch: Apple's New App Review Guidelines</a></li>
+            <li id="ref-14"><a href="https://www.gamedeveloper.com/business/ubisoft-says-ai-generated-placeholder-artwork-slipped-into-anno-117-pax-romana">Game Developer: Ubisoft Says AI-Generated Placeholder Artwork Slipped into Anno 117</a></li>
+            <li id="ref-15"><a href="https://gameinformer.com/2025/06/30/11bit-studios-responds-to-the-alters-generative-ai-controversy">Game Informer: 11 Bit Studios Responds to The Alters Generative AI Controversy</a></li>
+            <li id="ref-16"><a href="https://mashable.com/article/clair-obscur-expedition-33-indie-game-awards-revoked-ai">Mashable: Clair Obscur Expedition 33 Indie Game Awards Revoked Over AI</a></li>
+            <li id="ref-17"><a href="https://www.aiandgames.com/p/a-failure-of-platform-policy-the">AI and Games: A Failure of Platform Policy</a></li>
+            <li id="ref-18"><a href="https://blogs.microsoft.com/blog/2025/03/18/microsoft-ability-summit-2025-accessibility-in-the-ai-era/">Microsoft: Ability Summit 2025 - Accessibility in the AI Era</a></li>
+          </ol>
+        </section>
       </article>
     </div>
   </main>
