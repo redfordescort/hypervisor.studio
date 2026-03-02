@@ -274,6 +274,9 @@ footer { margin-top: 2rem; }
 <nav>
   <div class="container">
     <a href="./" class="nav-logo">GAIT</a>
+    <button class="nav-hamburger" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-links">
       <a href="./#levels">Levels</a>
       <a href="./#how-it-works">How It Works</a>
@@ -904,6 +907,19 @@ if (window.location.hash) {
     setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 300);
   }
 }
+</script>
+
+<script>
+// Sync banner height to nav position
+(function() {
+  var banner = document.querySelector('.preview-banner');
+  if (!banner) return;
+  function sync() {
+    document.documentElement.style.setProperty('--banner-h', banner.offsetHeight + 'px');
+  }
+  sync();
+  window.addEventListener('resize', sync);
+})();
 </script>
 
 </body>

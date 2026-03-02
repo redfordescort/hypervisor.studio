@@ -569,6 +569,9 @@ section { padding: 5rem 0; }
 <nav>
   <div class="container">
     <a href="./" class="nav-logo">GAIT</a>
+    <button class="nav-hamburger" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('nav-open')">
+      <span></span><span></span><span></span>
+    </button>
     <div class="nav-links">
       <a href="./#levels">Levels</a>
       <a href="./#how-it-works">How It Works</a>
@@ -648,6 +651,22 @@ section { padding: 5rem 0; }
       </div>
 
       <div class="level-item">
+        <div class="level-badge l1-badge"><span class="level-num">1</span></div>
+        <div class="level-content">
+          <h3>AI-Assisted Dev</h3>
+          <p class="level-headline">Generative AI used during development (brainstorming, prototyping, research), but nothing AI-generated reaches the player. Everything players experience is human-made.</p>
+        </div>
+      </div>
+
+      <div class="level-item">
+        <div class="level-badge l15-badge"><span class="level-num">1.5</span></div>
+        <div class="level-content">
+          <h3>AI Code</h3>
+          <p class="level-headline">AI code generation tools (Copilot, Cursor, Claude Code) in the toolchain — AI-generated code ships. All creative content remains human-authored.</p>
+        </div>
+      </div>
+
+      <div class="level-item">
         <div class="level-badge l2-badge"><span class="level-num">2</span></div>
         <div class="level-content">
           <h3>AI-Augmented</h3>
@@ -658,14 +677,6 @@ section { padding: 5rem 0; }
             <span class="level-tag">3D</span>
             <span class="level-tag">LOC</span>
           </div>
-        </div>
-      </div>
-
-      <div class="level-item">
-        <div class="level-badge l1-badge"><span class="level-num">1</span></div>
-        <div class="level-content">
-          <h3>AI-Assisted Dev</h3>
-          <p class="level-headline">Generative AI used during development (brainstorming, prototyping, research), but nothing AI-generated reaches the player. Everything players experience is human-made.</p>
         </div>
       </div>
 
@@ -683,14 +694,6 @@ section { padding: 5rem 0; }
             <span class="level-tag">VIDEO</span>
             <span class="level-tag">3D</span>
           </div>
-        </div>
-      </div>
-
-      <div class="level-item">
-        <div class="level-badge l15-badge"><span class="level-num">1.5</span></div>
-        <div class="level-content">
-          <h3>AI Code</h3>
-          <p class="level-headline">AI code generation tools (Copilot, Cursor, Claude Code) in the toolchain — AI-generated code ships. All creative content remains human-authored.</p>
         </div>
       </div>
 
@@ -948,6 +951,17 @@ document.querySelectorAll('.why-card, .level-item, .step, .redline-card, .consti
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
+
+// Sync banner height to nav position
+(function() {
+  var banner = document.querySelector('.preview-banner');
+  if (!banner) return;
+  function sync() {
+    document.documentElement.style.setProperty('--banner-h', banner.offsetHeight + 'px');
+  }
+  sync();
+  window.addEventListener('resize', sync);
+})();
 
 // Badge rendering
 const LEVELS = {
